@@ -2,7 +2,7 @@
 (Un)apologetically Canadian rhythm/puzzle/adventure game for your arcade cabinet/smart fridge/laptop. Written w/ RayLib.
 
 <details>
-  <summary>Specs</summary>
+  <summary><h3>Specs</h3></summary>
 
   #### 🦾 Code 
   - c++ 23 with descriptive variable names and comments if you feel like it 🤓
@@ -14,7 +14,7 @@
   - [SQLite](https://www.sqlite.org/) for the song & score database
 </details>
 <details>
-  <summary>Gameplay</summary>
+  <summary><h3>Gameplay</h3></summary>
 
   ### idk
 </details>
