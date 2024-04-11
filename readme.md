@@ -1,6 +1,19 @@
 # Logger
 
-A puzzle-platformer rhythm game made by placeholder_games in c++ with raylib.
+A puzzle-platformer rhythm game that is unapologetically Canadian, made by byte-sized-games in c++ with raylib.
+
+## Features
+
+### 🦾 Code
+
+- c++ 23 with descriptive variable names and comments if you feel like it 🤓
+- [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) style commits to describe changes in git
+  
+### ⚙️ Technologies
+
+- Just as build system
+- [RayLib](https://www.raylib.com/) for graphics
+- [SQLite](https://www.sqlite.org/) for the song & score database
 
 ## Building this project
 
@@ -32,6 +45,8 @@ If all works well, a binary output for your system will be found in `bin/out`.
 We can not promise compatibility with other systems out of the box.
 Sorry.
 We'll help if an issue is posted, but without access to other operating systems, there is no promise that we'll fully support operating systems outside of unix based ones.
+
+More build documentation at a future date...
 
 Binaries will be made available on the releases tab and an itch.io page once the game nears completion.
 If you are willing to wait, this is the better option, since there will not really be much game to play until v1.
