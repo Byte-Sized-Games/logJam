@@ -1,6 +1,6 @@
 # Logger
 
-A puzzle-platformer rhythm game that is unapologetically Canadian, made by byte-sized-games in c++ with raylib.
+(Un)apologetically Canadian rhythm/puzzle/adventure game for your arcade cabinet/smart fridge/laptop. Written w/ RayLib.
 
 ## Features
 
