@@ -9,7 +9,7 @@
   - [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) or something similar to describe changes in git
   
   #### ⚙️ Technologies
-  - CMake
+  - Just as build system
   - [RayLib](https://www.raylib.com/) for graphics
   - [SQLite](https://www.sqlite.org/) for the song & score database
 </details>
