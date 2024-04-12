@@ -19,4 +19,4 @@ jobs:
 
     - name: Build
       # Build your program with the given configuration
-      run: ./.github/just build
+      run: ./.github/just compile
