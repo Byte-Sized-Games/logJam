@@ -24,7 +24,7 @@ os := "linux"
 # Run code & clean up output - useful for testing
 @run: build
     echo -e "\n- Running binary -\n"
-    ./{{dir}}/target/{{target}}
+    ./{{dir}}/out/{{target}}
     just clean
 
 # Compile Code, do not link

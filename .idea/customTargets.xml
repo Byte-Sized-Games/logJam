@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CLionExternalBuildManager">
+    <target id="dd63a725-184a-48e2-b7b0-c693ca296548" name="Just native" defaultType="TOOL">
+      <configuration id="c80fa1d5-4893-4454-a6fc-d87fd50fb054" name="Just native">
+        <build type="TOOL">
+          <tool actionId="Tool_External Tools_just build" />
+        </build>
+        <clean type="TOOL">
+          <tool actionId="Tool_External Tools_just clean" />
+        </clean>
+      </configuration>
+    </target>
+    <target id="17215530-13ea-42fd-a8ea-89a1bc1cba6e" name="Just run native" defaultType="TOOL">
+      <configuration id="676bd3bf-594d-43f3-a0eb-8d49e3eebf9f" name="Just run native">
+        <build type="TOOL">
+          <tool actionId="Tool_External Tools_just run" />
+        </build>
+        <clean type="TOOL">
+          <tool actionId="Tool_External Tools_just clean" />
+        </clean>
+      </configuration>
+    </target>
+  </component>
+</project>
