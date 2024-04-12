@@ -1,13 +1,13 @@
 # Logger
 
-A puzzle-platformer rhythm game that is unapologetically Canadian, made by byte-sized-games in c++ with raylib.
+(Un)apologetically Canadian rhythm/puzzle/adventure game for your arcade cabinet/smart fridge/laptop. Written w/ RayLib.
 
 ## Features
 
 ### 🦾 Code
 
 - c++ 23 with descriptive variable names and comments if you feel like it 🤓
-- [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) style commits to describe changes in git
+- [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) to describe changes in git
   
 ### ⚙️ Technologies
 
