@@ -6,7 +6,7 @@
 
 ### 🦾 Code
 
-- c++ 23 with descriptive variable names and comments if you feel like it 🤓
+- c++ 20 with descriptive variable names and comments if you feel like it 🤓
 - [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) to describe changes in git
   
 ### ⚙️ Technologies
