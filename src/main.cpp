@@ -72,7 +72,7 @@ int main(void) {
       switch (currentState) {
       case loading:
         window.ClearBackground(raylib::Color::LightGray());
-        raylib::DrawText("Made in raylib", GetScreenWidth() / 2 - 60, GetScreenHeight() / 2, 20, raylib::Color::Maroon());
+        raylib::DrawText("Made with Raylib", GetScreenWidth() / 2 - 60, GetScreenHeight() / 2, 20, raylib::Color::Maroon());
         break;
       case menu:
         window.ClearBackground(raylib::Color::SkyBlue());

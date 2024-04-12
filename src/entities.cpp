@@ -1,9 +1,10 @@
 #include "entities.hpp"
 
-Entity::Entity(void) {
-  position = raylib::Vector2(0, 0);
-  id = ActiveEntities + 1;
-  ActiveEntities++;
+unsigned int Entity::ActiveEntities = 0;
+
+Entity::Entity() {
+  position = new raylib::Vector2(0, 0);
+  id = ActiveEntities++;
 }
 
-Entity::~Entity(void) { ActiveEntities--; }
+Entity::~Entity() { ActiveEntities--; }
