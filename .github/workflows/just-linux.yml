@@ -14,6 +14,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Chmod just binary
+      run: chmod +x .github/just
+
     - name: Build
       # Build your program with the given configuration
-      run: just build
+      run: ./.github/just build
