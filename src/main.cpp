@@ -2,6 +2,8 @@
 #include "inc/raylib-cpp.hpp"
 #include "string"
 #include "string.h"
+#include "entities.hpp"
+#include "ui.hpp"
 
 // -- Definitions -- //
 #define VERSION "dev"
@@ -12,6 +14,8 @@ using namespace std;
 /// gameState enum is used to determine what game logic should be running at a given moment.
 /// Includes menus, levels and settings.
 enum gameState { loading = 0, menu, levelSelect, level };
+
+int Entity::ActiveEntities = 0; // Set Initial Amount of active entities (gameObjects)
 
 int main(void) {
   // ---------------------------------
@@ -28,7 +32,10 @@ int main(void) {
 
   int frameCounter = 0; // Frame utility. Used to check time
 
+  // Set Target fps to deltaTime
   SetTargetFPS(delta);
+
+  Button playButton = Button(20, 250, "Play", raylib::Color::DarkGray(), raylib::Color::LightGray());
 
   while (!WindowShouldClose()) {
     // ---------------------------------
@@ -45,6 +52,9 @@ int main(void) {
       break;
     case menu:
       frameCounter = 0;
+      if (playButton.IsPressed()) {
+        currentState = loading;
+      }
       break;
     case levelSelect:
       break; // TODO
@@ -68,6 +78,7 @@ int main(void) {
         window.ClearBackground(raylib::Color::SkyBlue());
 
         raylib::DrawText(title.c_str(), GetScreenWidth() / 10 - 64, GetScreenHeight() / 10, 40, raylib::Color::White());
+        playButton.Render();
         break;
       default:
         exit(1);
