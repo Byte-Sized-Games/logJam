@@ -15,7 +15,7 @@ using namespace std;
 /// Includes menus, levels and settings.
 enum gameState { loading = 0, menu, levelSelect, level };
 
-int Entity::ActiveEntities = 0; // Set Initial Amount of active entities (gameObjects)
+unsigned int Entity::ActiveEntities = 0; // Set Initial Amount of active entities (gameObjects)
 
 int main(void) {
   // ---------------------------------
