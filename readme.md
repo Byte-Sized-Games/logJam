@@ -41,7 +41,7 @@ When running the just script be sure to specify which operating system you use, 
 Once setup is complete, run `just build` in the root of the repository.
 If all works well, a binary output for your system will be found in `bin/out`.
 
-**Note:** This project was made on linux.
+**Note:** This project was made on linux and macos.
 We can not promise compatibility with other systems out of the box.
 Sorry.
 We'll help if an issue is posted, but without access to other operating systems, there is no promise that we'll fully support operating systems outside of unix based ones.
