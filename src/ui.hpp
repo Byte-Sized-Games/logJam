@@ -7,8 +7,7 @@ protected:
   raylib::Vector2 position;
 
 public:
-  UiElement(void);
-  ~UiElement(void);
+  virtual void Render(void);
 };
 
 /// @brief A button that can be used to trigger events
