@@ -18,5 +18,4 @@ jobs:
       run: chmod +x .github/just
 
     - name: Build
-      # Build your program with the given configuration
       run: ./.github/just compile

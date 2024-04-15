@@ -1,9 +1,13 @@
 // -- Headers -- //
+#include <iostream>
 #include "inc/raylib-cpp.hpp"
 #include "string"
-#include "string.h"
+#include <cstring>
 #include "entities.hpp"
 #include "ui.hpp"
+#include "functional"
+#include "vector"
+#include "Console.cpp"
 
 // -- Definitions -- //
 #define VERSION "dev"
@@ -17,10 +21,11 @@ enum gameState { loading = 0, menu, levelSelect, level };
 
 unsigned int Entity::ActiveEntities = 0; // Set Initial Amount of active entities (gameObjects)
 
+
 int main(void) {
-  // ---------------------------------
-  // Initialise Game
-  // ---------------------------------
+//  Persistent callstacks. Probably not a good idea to use these, but they're here.
+  const vector<pair<function<void(void)>, bool>> LogicStack, DrawStack;
+  console::level = true;
   int screenWidth = 800;               // screen height
   int screenHeight = 800;              // screen width
   string title = "Logger - Version: "; // in game title
@@ -71,7 +76,7 @@ int main(void) {
     { // Drawing is done in a separate scope for isolation and organization purposes
       switch (currentState) {
       case loading:
-        window.ClearBackground(raylib::Color::LightGray());
+//        window.ClearBackground(raylib::Color::LightGray());
         raylib::DrawText("Made with Raylib", GetScreenWidth() / 2 - 60, GetScreenHeight() / 2, 20, raylib::Color::Maroon());
         break;
       case menu:
