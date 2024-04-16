@@ -7,7 +7,7 @@
 #include "ui.hpp"
 #include "functional"
 #include "vector"
-#include "Console.cpp"
+//#include "Console.cpp"
 
 // -- Definitions -- //
 #define VERSION "dev"
@@ -25,15 +25,14 @@ unsigned int Entity::ActiveEntities = 0; // Set Initial Amount of active entitie
 int main(void) {
 //  Persistent callstacks. Probably not a good idea to use these, but they're here.
   const vector<pair<function<void(void)>, bool>> LogicStack, DrawStack;
-  console::level = true;
-  int screenWidth = 800;               // screen height
-  int screenHeight = 800;              // screen width
+//  console::level = true;
+  const unsigned int screenWidth = 800, screenHeight = 800;
   string title = "Logger - Version: "; // in game title
   title.append(VERSION);               // set game version in title
   gameState currentState = loading;    // set initial scene for game
   int delta = 60;                      // deltaTime/framerate target
 
-  raylib::Window window(screenWidth, screenHeight, "Logger"); // Initialise window and window title
+  raylib::Window window(screenWidth, screenHeight, title); // Initialise window and window title
 
   int frameCounter = 0; // Frame utility. Used to check time
 

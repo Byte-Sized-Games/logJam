@@ -40,4 +40,4 @@ os := "linux"
 
 # Clean output
 clean:
-    @rm -rf {{dir}}/tmp/*
+    @rm -rf {{dir}}/tmp

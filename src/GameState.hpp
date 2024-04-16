@@ -2,8 +2,8 @@
 // Created by phoenix on 15/04/24.
 //
 
-#ifndef LOGJAM_GAMESTATE_H
-#define LOGJAM_GAMESTATE_H
+#ifndef LOGJAM_GAMESTATE_HPP
+#define LOGJAM_GAMESTATE_HPP
 
 #include "ui.hpp"
 #include "vector"
@@ -21,4 +21,4 @@ public:
 };
 
 
-#endif //LOGJAM_GAMESTATE_H
+#endif //LOGJAM_GAMESTATE_HPP

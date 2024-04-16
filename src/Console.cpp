@@ -7,7 +7,7 @@
 using namespace std;
 
 namespace console {
-    static bool level;
+    bool level;
     void log(const string& target) {
         cout << target << endl;
     }
