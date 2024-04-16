@@ -11,7 +11,7 @@
   
 ### ⚙️ Technologies
 
-- Just as build system
+- CMake as build system
 - [RayLib](https://www.raylib.com/) for graphics
 - [SQLite](https://www.sqlite.org/) for the song & score database
 
