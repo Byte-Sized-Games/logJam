@@ -1,5 +1,23 @@
 #include "ui.hpp"
 
+// -- UiElement Skeleton Methods -- //
+
+/// @brief Get X value of Element position
+/// @return float value of elements X position
+float UiElement::X(void) { return position.GetX(); }
+
+/// @brief Get Y value of Element position
+/// @return float value of elements Y position
+float UiElement::Y(void) { return position.GetY(); }
+
+/// @brief Set X position Value of Element
+/// @param X float value of new X position on Screen
+void UiElement::X(float X) { position.SetX(X); }
+
+/// @brief Set Y position Value of Element
+/// @param Y float value of new Y position on Screen
+void UiElement::Y(float Y) { position.SetY(Y); }
+
 // -- Button Ui Element -- //
 
 /// @brief Default constructor. Leaves fields "empty"
@@ -65,14 +83,6 @@ void Button::Render(void) {
 
 // -- Button Getters -- //
 
-/// @brief Get X value of button position
-/// @return float value of buttons X position
-float Button::X(void) { return position.GetX(); }
-
-/// @brief Get Y value of button position
-/// @return float value of buttons Y position
-float Button::Y(void) { return position.GetY(); }
-
 /// @brief Get Length of button box
 /// @return float value of buttons Length
 float Button::Length(void) { return box.GetHeight(); }
@@ -86,14 +96,6 @@ float Button::Width(void) { return box.GetWidth(); }
 std::string Button::Content(void) { return content; }
 
 // -- Button Setters -- //
-
-/// @brief Set X position Value of button
-/// @param X float value of new X position on Screen
-void Button::X(float X) { position.SetX(X); }
-
-/// @brief Set Y position Value of button
-/// @param Y float value of new Y position on Screen
-void Button::Y(float Y) { position.SetY(Y); }
 
 /// @brief Set Length of button box
 /// @param Length float value of new Button box Length

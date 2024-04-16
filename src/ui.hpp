@@ -8,10 +8,16 @@ protected:
 
 public:
   virtual void Render(void);
+  // -- Setters -- //
+  void X(float);
+  void Y(float);
+  // -- Getters -- //
+  float X(void);
+  float Y(void);
 };
 
 /// @brief A button that can be used to trigger events
-class Button : UiElement {
+class Button : public UiElement {
 private:
   std::string content;
   raylib::Rectangle box;
@@ -30,14 +36,10 @@ public:
   bool IsPressed(void);
   void Render(void);
   // -- Setters -- //
-  void X(float);
-  void Y(float);
   void Length(float);
   void Width(float);
   void Content(std::string);
   // -- Getters -- //
-  float X(void);
-  float Y(void);
   float Length(void);
   float Width(void);
   std::string Content(void);
