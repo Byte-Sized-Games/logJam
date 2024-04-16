@@ -1,4 +1,5 @@
 #include "screen.hpp"
+#include <iostream>
 
 // -- Screen -- //
 
@@ -10,7 +11,9 @@ Screen::Screen(void) { background = raylib::Color::White(); }
 /// @param Length Length of the array
 Screen::Screen(std::vector<UiElement *> Menu) {
   background = raylib::Color::White();
-  std::vector<UiElement *> menu(Menu);
+  for (UiElement *element : Menu) {
+    menu.insert(menu.end(), element);
+  }
 }
 
 /// @brief Primary Constructor. Does not cover initialisation of background colour
@@ -19,14 +22,16 @@ Screen::Screen(std::vector<UiElement *> Menu) {
 /// @param Background Background colour of the menu
 Screen::Screen(std::vector<UiElement *> Menu, raylib::Color Background) {
   background = Background;
-  std::vector<UiElement *> menu(Menu);
+  for (UiElement *element : Menu) {
+    menu.insert(menu.end(), element);
+  }
 }
 
 /// @brief Destructor for Screen. Deletes all references and complicated objects to free memory
 Screen::~Screen(void) {
-  for (UiElement *element : menu) {
+  /*for (UiElement *element : menu) {
     delete element;
-  }
+  }*/
 }
 
 // -- Screen Methods -- //
