@@ -33,7 +33,7 @@
 
 # Output Directory
 bin/
+build/
 
 # CMake build files
 cmake-build-debug/
-CMakeLists.txt
