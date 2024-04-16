@@ -17,7 +17,7 @@
     <exec>
       <option name="COMMAND" value="/bin/just" />
       <option name="PARAMETERS" value="clean" />
-      <option name="WORKING_DIRECTORY" />
+      <option name="WORKING_DIRECTORY" value="$ProjectFileDir$" />
     </exec>
   </tool>
 </toolSet>
