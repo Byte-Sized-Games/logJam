@@ -1,6 +1,11 @@
 #include "ui.hpp"
+#include <utility>
 
 // -- UiElement Skeleton Methods -- //
+
+// These are Useless and solely exist to satisfy linter & compiler warnings
+UiElement::UiElement(void) {}
+void UiElement::Render(void) {}
 
 /// @brief Get X value of Element position
 /// @return float value of elements X position
@@ -21,7 +26,7 @@ void UiElement::Y(float Y) { position.SetY(Y); }
 // -- Button Ui Element -- //
 
 /// @brief Default constructor. Leaves fields "empty"
-Button::Button(void) {}
+Button::Button() = default;
 
 /// @brief Constructor for Button Ui element. Initialises all fields aside from box height and width
 /// @param X X coordinate for the button
@@ -32,7 +37,7 @@ Button::Button(void) {}
 Button::Button(float X, float Y, std::string Content, raylib::Color Background, raylib::Color Foreground) {
   position = raylib::Vector2(X, Y);
   box = raylib::Rectangle(position, raylib::Vector2(80, 40));
-  content = Content;
+  content = std::move(Content);
   background = Background;
   foreground = Foreground;
 }

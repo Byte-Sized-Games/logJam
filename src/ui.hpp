@@ -14,6 +14,8 @@ public:
   // -- Getters -- //
   float X(void);
   float Y(void);
+  virtual void Render();
+  UiElement();
 };
 
 /// @brief A button that can be used to trigger events
