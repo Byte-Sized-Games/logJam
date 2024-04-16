@@ -14,7 +14,6 @@ public:
   // -- Getters -- //
   float X(void);
   float Y(void);
-  virtual void Render();
   UiElement();
 };
 
