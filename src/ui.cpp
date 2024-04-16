@@ -4,8 +4,8 @@
 // -- UiElement Skeleton Methods -- //
 
 // These are Useless and solely exist to satisfy linter & compiler warnings
-UiElement::UiElement(void) {}
-void UiElement::Render(void) {}
+UiElement::UiElement(void) { position = raylib::Vector2(400, 400); }
+void UiElement::Render(void) { raylib::DrawText("ERROR", position.GetX(), position.GetY(), 30, raylib::Color::Red()); }
 
 /// @brief Get X value of Element position
 /// @return float value of elements X position

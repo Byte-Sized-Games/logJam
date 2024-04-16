@@ -1,4 +1,4 @@
-#include "inc/raylib-cpp.hpp"
+#include "raylib-cpp.hpp"
 #include <string>
 
 /// @brief Base Ui Element class. All elements derive from this for polymorphism
@@ -7,6 +7,7 @@ protected:
   raylib::Vector2 position;
 
 public:
+  UiElement();
   virtual void Render(void);
   // -- Setters -- //
   void X(float);
@@ -14,7 +15,6 @@ public:
   // -- Getters -- //
   float X(void);
   float Y(void);
-  UiElement();
 };
 
 /// @brief A button that can be used to trigger events

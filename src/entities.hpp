@@ -1,8 +1,8 @@
-#include "inc/raylib-cpp.hpp"
+#include "raylib-cpp.hpp"
 
 class Entity {
 protected:
-  raylib::Vector2* position;
+  raylib::Vector2 *position;
   int id;
 
 public:
