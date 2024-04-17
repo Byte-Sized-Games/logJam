@@ -51,6 +51,9 @@ int main() {
   Button playButton = Button(20, 250, "Play", raylib::Color::DarkGray(), raylib::Color::LightGray());
   Screen mainMenu = Screen(std::vector<UiElement *>{&playButton}, raylib::Color::SkyBlue());
 
+  TextObject loadingText = TextObject(400, 400, "Made in Raylib with Love", raylib::Color::Maroon());
+  Screen loadingScreen = Screen(std::vector<UiElement *>{&loadingText}, raylib::Color::LightGray());
+
   while (!WindowShouldClose()) {
     // ---------------------------------
     // Game Logic
@@ -85,14 +88,13 @@ int main() {
     { // Drawing is done in a separate scope for isolation and organization purposes
       switch (currentState) {
       case loading:
-        //                window.ClearBackground(raylib::Color::LightGray());
-        raylib::DrawText("Made with Raylib", GetScreenWidth() / 2 - 60, GetScreenHeight() / 2, 20, raylib::Color::Maroon());
+        loadingScreen.Render(&window);
+
         break;
       case menu:
         mainMenu.Render(&window);
 
         raylib::DrawText(title.c_str(), GetScreenWidth() / 10 - 64, GetScreenHeight() / 10, 40, raylib::Color::White());
-        // playButton.Render();
         break;
       default:
         exit(1);
