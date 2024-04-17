@@ -27,10 +27,10 @@ Screen::Screen(std::vector<UiElement *> Menu, raylib::Color Background) {
   }
 }
 
-/// @brief Destructor for Screen. Deletes all references and complicated objects to free memory
+/// @brief Destructor for Screen. Currently unused
 Screen::~Screen(void) {
   for (UiElement *element : menu) {
-    delete element;
+    // delete element;
   }
 }
 
