@@ -17,6 +17,31 @@ public:
   float Y(void);
 };
 
+/// @brief A simple way to display text on screen
+class TextObject : public UiElement {
+private:
+  std::string content;
+  raylib::Color colour;
+  int fontSize;
+
+public:
+  // -- Constructors -- //
+  TextObject(void);
+  TextObject(float, float);
+  TextObject(float, float, std::string);
+  TextObject(float, float, std::string, int);
+  TextObject(float, float, std::string, raylib::Color);
+  TextObject(float, float, std::string, int, raylib::Color);
+  // -- Deconstructors -- //
+  ~TextObject(void);
+  // -- Methods -- //
+  void Render(void);
+  // -- Setters -- //
+  void Content(std::string);
+  // -- Getters -- //
+  std::string Content(void);
+};
+
 /// @brief A button that can be used to trigger events
 class Button : public UiElement {
 private:
