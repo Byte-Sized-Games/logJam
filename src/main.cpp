@@ -54,7 +54,16 @@ int main() {
   TextObject loadingText = TextObject(400, 400, "Made in Raylib with Love", raylib::Color::Maroon());
   Screen loadingScreen = Screen(std::vector<UiElement *>{&loadingText}, raylib::Color::LightGray());
 
-
+//  example ephemeral stack item
+    LogicStack.emplace_back([](){
+        console::debug("ephemeral stack item");
+        return true;
+    });
+//  example permanent stack item
+    LogicStack.emplace_back([](){
+        console::debug("permanent stack item");
+        return false;
+    });
 
     while (!WindowShouldClose()) {
     // ---------------------------------
