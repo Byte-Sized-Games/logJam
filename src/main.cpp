@@ -7,7 +7,6 @@
 // #include "ui.hpp"
 #include "functional"
 #include "vector"
-// #include "GameState.hpp"
 #include "screen.hpp"
 
 // -- Definitions -- //
@@ -31,7 +30,7 @@ enum gameState { loading = 0, menu, levelSelect, level };
 
 int main() {
   //  Persistent callstacks. Probably not a good idea to use these, but they're here.
-  const vector<pair<function<void(void)>, bool>> LogicStack, DrawStack;
+  std::vector<std::function<bool()>> LogicStack, DrawStack;
   console::level = true;
   const unsigned int screenWidth = 800, screenHeight = 800;
   const string title = "Logger - Version: " + ((string)VERSION); // in game title
@@ -39,6 +38,7 @@ int main() {
   //  CurrentState.DrawStack.insert({[](){console::debug("balls");}, true})
 
   gameState currentState = loading; // set initial scene for game
+  GameState CurrentState = GameState();
   int delta = 60;                   // deltaTime/framerate target
 
   raylib::Window window(screenWidth, screenHeight, title); // Initialise window and window title
@@ -54,12 +54,19 @@ int main() {
   TextObject loadingText = TextObject(400, 400, "Made in Raylib with Love", raylib::Color::Maroon());
   Screen loadingScreen = Screen(std::vector<UiElement *>{&loadingText}, raylib::Color::LightGray());
 
-  while (!WindowShouldClose()) {
+
+
+    while (!WindowShouldClose()) {
     // ---------------------------------
     // Game Logic
     // ---------------------------------
 
-    switch (currentState) {
+    for(unsigned int i = 0; i < LogicStack.size(); i++) if(LogicStack[i]()) LogicStack.erase(LogicStack.begin() + i);
+
+    for(unsigned int i = 0; i < CurrentState.LogicStack.size(); i++) if(CurrentState.LogicStack[i]()) CurrentState.LogicStack.erase(CurrentState.LogicStack.begin() + i);
+
+
+        switch (currentState) {
     case loading:
       frameCounter++;
       // Catch 2 seconds passing

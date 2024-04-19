@@ -1,11 +1,11 @@
 //
 // Created by phoenix on 15/04/24.
 //
+#include "ui.hpp"
 
 #ifndef LOGJAM_GAMESTATE_HPP
 #define LOGJAM_GAMESTATE_HPP
 
-#include "ui.hpp"
 #include "vector"
 #include "functional"
 #include "utility"
@@ -16,8 +16,8 @@ public:
     const std::vector<UiElement*> InitScene;
 //    State-specific callstack on input processing and frame events, respectively
 //    formatted as <void callback(void),ephemerality>
-    const std::vector<std::pair<std::function<void()>,bool>> LogicStack, DrawStack;
-    GameState();
+    std::vector<std::function<bool()>> LogicStack, DrawStack;
+    GameState() = default;
 };
 
 

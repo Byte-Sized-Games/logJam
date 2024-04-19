@@ -1,6 +1,6 @@
+#include "GameState.hpp"
 #include <vector>
 #include "raylib-cpp.hpp"
-#include "ui.hpp"
 
 /// @brief Collection of Ui Elements.
 /// Used to collect and simplify elements of a menu or screen, and save lines of code when rendering
