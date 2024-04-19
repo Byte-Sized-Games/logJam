@@ -11,11 +11,11 @@ namespace ui {
         UiElement();
         virtual void Render(void);
         // -- Setters -- //
-        void X(float);
-        void Y(float);
+        void x(float);
+        void y(float);
         // -- Getters -- //
-        float X(void);
-        float Y(void);
+        float x(void);
+        float y(void);
     };
 
 /// @brief A simple way to display text on screen
@@ -23,7 +23,7 @@ namespace ui {
     private:
         std::string content;
         raylib::Color colour;
-        int fontSize;
+        unsigned int fontSize;
 
     public:
         // -- Constructors -- //
