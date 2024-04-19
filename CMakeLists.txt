@@ -37,7 +37,9 @@ if (NOT raylib_cpp_FOUND)
 endif()
 
 # This is the main part:
-set(SOURCES src/main.cpp src/entities.cpp src/ui.cpp src/screen.cpp)
+set(SOURCES src/main.cpp src/entities.cpp src/ui.cpp src/screen.cpp
+        src/Menu.h
+        src/ScrollableList.h)
 add_executable(${PROJECT_NAME} ${SOURCES})
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 20)
 target_link_libraries(${PROJECT_NAME} PUBLIC raylib raylib_cpp)

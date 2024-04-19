@@ -33,7 +33,7 @@ int main() {
   std::vector<std::function<bool()>> LogicStack, DrawStack;
   console::level = true;
   const unsigned int screenWidth = 800, screenHeight = 800;
-  const string title = "Logger - Version: " + ((string)VERSION); // in game title
+  const string title = "Logger (" + ((string)VERSION) + ")"; // in game title
   // GameState CurrentState = GameState();
   //  CurrentState.DrawStack.insert({[](){console::debug("balls");}, true})
 
