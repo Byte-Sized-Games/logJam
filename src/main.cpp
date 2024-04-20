@@ -18,10 +18,11 @@ using namespace ui;
 
 namespace console {
 bool level;
-void log(const string &target) { cout << target << endl; }
+void log(const string &target) {
+    cout << target << endl;
+}
 void debug(const string &target) {
-	if (level)
-		log(target);
+	if (level) log(target);
 }
 } // namespace console
 
@@ -35,7 +36,7 @@ int main(int argv, char *argc[]) {
 	if ((argv >= 2) && (strcmp(argc[1], "debug") == 0)) console::debug((console::level = true) ? "Debugging!" : "");
 
 
-	//  Persistent call stacks. Probably not a good idea to use these, but they're here.
+	//  Persistent callstacks. Probably not a good idea to use these, but they're here.
 	std::vector<std::function<bool()>> LogicStack, DrawStack;
 	console::level = true;
 	const unsigned int screenWidth = 800, screenHeight = 800;

@@ -57,27 +57,29 @@ namespace ui {
 
     TextObject::TextObject(float X, float Y, std::string Content, int FontSize) {
         position = raylib::Vector2(X, Y);
-        content = Content;
+        content = std::move(Content);
         fontSize = FontSize;
         colour = raylib::Color::Blue();
     }
 
     TextObject::TextObject(float X, float Y, std::string Content, int FontSize, raylib::Color Colour) {
         position = raylib::Vector2(X, Y);
-        content = Content;
+        content = std::move(Content);
         fontSize = FontSize;
         colour = Colour;
     }
 
-    TextObject::~TextObject(void) {}
+    TextObject::~TextObject() {}
 
 // -- TextObject Methods -- //
 
-    void TextObject::Render(void) { raylib::DrawText(content, position.GetX(), position.GetY(), 20, colour); }
+    void TextObject::Render() { raylib::DrawText(content, position.GetX(), position.GetY(), 20, colour); }
 
 /// @brief Get String Content of textObject
 /// @return c++ string value of textObjects content
-    std::string TextObject::Content(void) { return content; }
+    std::string TextObject::Content() {
+        return content;
+    }
 
 /// @brief Set string Content of textObject
 /// @param Content c++ string value of new textObject content
