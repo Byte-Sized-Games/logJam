@@ -1,4 +1,4 @@
-#include "gameState.hpp"
+#include "game.cpp"
 #include <vector>
 #include "raylib-cpp.hpp"
 
@@ -12,7 +12,7 @@ class Screen {
   public:
 	Screen(void);
 	~Screen(void);
-	Screen(std::vector<ui::UiElement *>);
-	Screen(std::vector<ui::UiElement *>, raylib::Color);
+	Screen(const std::vector<ui::UiElement *>&);
+	Screen(const std::vector<ui::UiElement *>&, raylib::Color);
 	void Render(raylib::Window *);
 };

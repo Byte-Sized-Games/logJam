@@ -13,11 +13,16 @@
 class GameState {
   public:
 	//    Elements drawn on state init
-	const std::vector<ui::UiElement *> InitScene;
+	std::vector<ui::UiElement *>* InitScene;
 	//    State-specific call stack on input processing and frame events, respectively
-	//    formatted as <void callback(void),ephemerality>
-	std::vector<std::function<bool()>> LogicStack, DrawStack;
+	//    deleted from stack if returns true
+	std::vector<std::function<bool()>> LogicStack, DrawStack = {[](){
+        return true;
+    }};
 	GameState() = default;
+    GameState(std::vector<ui::UiElement *>* InitScene) {
+        this->InitScene = InitScene;
+    }
 };
 
 #endif // LOGJAM_GAMESTATE_HPP

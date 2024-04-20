@@ -4,37 +4,24 @@
 #include "string"
 #include <cstring>
 #include "entities.hpp"
-// #include "GameState.hpp"
 #include "screen.hpp"
-// #include "ui.hpp"
 #include "functional"
 #include "vector"
 
-// -- Definitions -- //
+#include "console.cpp"
+
 #define VERSION "dev"
 
 using namespace std;
 using namespace ui;
+using namespace game;
 
-namespace console {
-bool level;
-void log(const string &target) {
-    cout << target << endl;
-}
-void debug(const string &target) {
-	if (level) log(target);
-}
-} // namespace console
-
-/// @brief Enum used to manage different stages of the game.
-/// gameState enum is used to determine what game logic should be running at a given moment.
-/// Includes menus, levels and settings.
+/// @brief Enum used to determine what game logic should be running at a given moment.
 enum gameState { loading = 0, menu, levelSelect, level };
 
 int main(int argv, char *argc[]) {
 	// Check CLI args
-	if ((argv >= 2) && (strcmp(argc[1], "debug") == 0)) console::debug((console::level = true) ? "Debugging!" : "");
-
+	if ((argv >= 2) && (!strcmp(argc[1], "debug"))) console::debug((console::level = true) ? "Debugging!" : "");  // NOLINT
 
 	//  Persistent callstacks. Probably not a good idea to use these, but they're here.
 	std::vector<std::function<bool()>> LogicStack, DrawStack;
@@ -45,12 +32,13 @@ int main(int argv, char *argc[]) {
 	//  CurrentState.DrawStack.insert({[](){console::debug("balls");}, true})
 
 	gameState currentState = loading; // set initial scene for game
-	GameState CurrentState = GameState();
 	int delta = 60; // deltaTime/framerate target
 
 	raylib::Window window(screenWidth, screenHeight, title); // Initialise window and window title
 
 	int frameCounter = 0; // Frame utility. Used to check time
+
+
 
 	// Set Target fps to deltaTime
 	SetTargetFPS(delta);
@@ -77,14 +65,9 @@ int main(int argv, char *argc[]) {
 		// Game Logic
 		// ---------------------------------
 
-		/*		for (unsigned int i = 0; i < LogicStack.size(); i++)
-					if (LogicStack[i]())
-						LogicStack.erase(LogicStack.begin() + i);
+        for (unsigned int i = 0; i < LogicStack.size(); i++) if (LogicStack[i]()) LogicStack.erase(LogicStack.begin() + i);
+        for (unsigned int i = 0; i < CurrentState.LogicStack.size(); i++) if (CurrentState.LogicStack[i]()) CurrentState.LogicStack.erase(CurrentState.LogicStack.begin() + i);
 
-				for (unsigned int i = 0; i < CurrentState.LogicStack.size(); i++)
-					if (CurrentState.LogicStack[i]())
-						CurrentState.LogicStack.erase(CurrentState.LogicStack.begin() + i);
-		*/
 		switch (currentState) {
 		case loading:
 			frameCounter++;
