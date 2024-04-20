@@ -38,8 +38,8 @@ endif()
 
 # This is the main part:
 set(SOURCES src/main.cpp src/entities.cpp src/ui.cpp src/screen.cpp
-        src/Menu.h
-        src/ScrollableList.h)
+        src/menu.hpp
+        src/scrollableList.hpp)
 add_executable(${PROJECT_NAME} ${SOURCES})
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 20)
 target_link_libraries(${PROJECT_NAME} PUBLIC raylib raylib_cpp)

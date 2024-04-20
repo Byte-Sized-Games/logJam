@@ -32,12 +32,8 @@ enum gameState { loading = 0, menu, levelSelect, level };
 
 int main(int argv, char *argc[]) {
 	// Check CLI args
-	if (argv >= 2) {
-		if (strcmp(argc[1], "debug") == 0) {
-			console::level = true;
-			console::debug("Debugging!");
-		}
-	}
+	if ((argv >= 2) && (strcmp(argc[1], "debug") == 0)) console::debug((console::level = true) ? "Debugging!" : "");
+
 
 	//  Persistent call stacks. Probably not a good idea to use these, but they're here.
 	std::vector<std::function<bool()>> LogicStack, DrawStack;
