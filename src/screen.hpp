@@ -1,4 +1,4 @@
-#include "GameState.hpp"
+#include "gameState.hpp"
 #include <vector>
 #include "raylib-cpp.hpp"
 
