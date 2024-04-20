@@ -11,14 +11,13 @@
 #include "utility"
 
 class GameState {
-public:
-//    Elements drawn on state init
-    const std::vector<UiElement*> InitScene;
-//    State-specific callstack on input processing and frame events, respectively
-//    formatted as <void callback(void),ephemerality>
-    std::vector<std::function<bool()>> LogicStack, DrawStack;
-    GameState() = default;
+  public:
+	//    Elements drawn on state init
+	const std::vector<ui::UiElement *> InitScene;
+	//    State-specific call stack on input processing and frame events, respectively
+	//    formatted as <void callback(void),ephemerality>
+	std::vector<std::function<bool()>> LogicStack, DrawStack;
+	GameState() = default;
 };
 
-
-#endif //LOGJAM_GAMESTATE_HPP
+#endif // LOGJAM_GAMESTATE_HPP

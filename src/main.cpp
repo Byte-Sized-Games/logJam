@@ -4,22 +4,24 @@
 #include "string"
 #include <cstring>
 #include "entities.hpp"
+// #include "GameState.hpp"
+#include "screen.hpp"
 // #include "ui.hpp"
 #include "functional"
 #include "vector"
-#include "screen.hpp"
 
 // -- Definitions -- //
 #define VERSION "dev"
 
 using namespace std;
+using namespace ui;
 
 namespace console {
 bool level;
 void log(const string &target) { cout << target << endl; }
 void debug(const string &target) {
-  if (level)
-    log(target);
+	if (level)
+		log(target);
 }
 } // namespace console
 
@@ -29,97 +31,100 @@ void debug(const string &target) {
 enum gameState { loading = 0, menu, levelSelect, level };
 
 int main() {
-  //  Persistent callstacks. Probably not a good idea to use these, but they're here.
-  std::vector<std::function<bool()>> LogicStack, DrawStack;
-  console::level = true;
-  const unsigned int screenWidth = 800, screenHeight = 800;
-  const string title = "Logger (" + ((string)VERSION) + ")"; // in game title
-  // GameState CurrentState = GameState();
-  //  CurrentState.DrawStack.insert({[](){console::debug("balls");}, true})
+	//  Persistent call stacks. Probably not a good idea to use these, but they're here.
+	std::vector<std::function<bool()>> LogicStack, DrawStack;
+	console::level = true;
+	const unsigned int screenWidth = 800, screenHeight = 800;
+	const string title = "Logger (" + ((string)VERSION) + ")"; // in game title
+	// GameState CurrentState = GameState();
+	//  CurrentState.DrawStack.insert({[](){console::debug("balls");}, true})
 
-  gameState currentState = loading; // set initial scene for game
-  GameState CurrentState = GameState();
-  int delta = 60;                   // deltaTime/framerate target
+	gameState currentState = loading; // set initial scene for game
+	GameState CurrentState = GameState();
+	int delta = 60; // deltaTime/framerate target
 
-  raylib::Window window(screenWidth, screenHeight, title); // Initialise window and window title
+	raylib::Window window(screenWidth, screenHeight, title); // Initialise window and window title
 
-  int frameCounter = 0; // Frame utility. Used to check time
+	int frameCounter = 0; // Frame utility. Used to check time
 
-  // Set Target fps to deltaTime
-  SetTargetFPS(delta);
+	// Set Target fps to deltaTime
+	SetTargetFPS(delta);
 
-  Button playButton = Button(20, 250, "Play", raylib::Color::DarkGray(), raylib::Color::LightGray());
-  Screen mainMenu = Screen(std::vector<UiElement *>{&playButton}, raylib::Color::SkyBlue());
+	Button playButton = Button(20, 250, "Play", raylib::Color::DarkGray(), raylib::Color::LightGray());
+	Screen mainMenu = Screen(std::vector<UiElement *>{&playButton}, raylib::Color::SkyBlue());
 
-  TextObject loadingText = TextObject(400, 400, "Made in Raylib with Love", raylib::Color::Maroon());
-  Screen loadingScreen = Screen(std::vector<UiElement *>{&loadingText}, raylib::Color::LightGray());
+	TextObject loadingText = TextObject(400, 400, "Made in Raylib with Love", raylib::Color::Maroon());
+	Screen loadingScreen = Screen(std::vector<UiElement *>{&loadingText}, raylib::Color::LightGray());
 
-//  example ephemeral stack item
-    LogicStack.emplace_back([](){
-        console::debug("ephemeral stack item");
-        return true;
-    });
-//  example permanent stack item
-    LogicStack.emplace_back([](){
-        console::debug("permanent stack item");
-        return false;
-    });
+	//  example ephemeral stack item
+	LogicStack.emplace_back([]() {
+		console::debug("ephemeral stack item");
+		return true;
+	});
+	//  example permanent stack item
+	LogicStack.emplace_back([]() {
+		console::debug("permanent stack item");
+		return false;
+	});
 
-    while (!WindowShouldClose()) {
-    // ---------------------------------
-    // Game Logic
-    // ---------------------------------
+	while (!WindowShouldClose()) {
+		// ---------------------------------
+		// Game Logic
+		// ---------------------------------
 
-    for(unsigned int i = 0; i < LogicStack.size(); i++) if(LogicStack[i]()) LogicStack.erase(LogicStack.begin() + i);
+		/*		for (unsigned int i = 0; i < LogicStack.size(); i++)
+					if (LogicStack[i]())
+						LogicStack.erase(LogicStack.begin() + i);
 
-    for(unsigned int i = 0; i < CurrentState.LogicStack.size(); i++) if(CurrentState.LogicStack[i]()) CurrentState.LogicStack.erase(CurrentState.LogicStack.begin() + i);
+				for (unsigned int i = 0; i < CurrentState.LogicStack.size(); i++)
+					if (CurrentState.LogicStack[i]())
+						CurrentState.LogicStack.erase(CurrentState.LogicStack.begin() + i);
+		*/
+		switch (currentState) {
+		case loading:
+			frameCounter++;
+			// Catch 2 seconds passing
+			if (frameCounter > 2 * delta) {
+				currentState = menu;
+			}
+			break;
+		case menu:
+			frameCounter = 0;
+			if (playButton.IsPressed()) {
+				currentState = loading;
+			}
+			break;
+		case levelSelect:
+			break; // TODO
+		case level:
+			break; // TODO
+		default:
+			break;
+		}
 
+		// ---------------------------------
+		// Draw
+		// ---------------------------------
+		BeginDrawing();
+		{ // Drawing is done in a separate scope for isolation and organization purposes
+			switch (currentState) {
+			case loading:
+				loadingScreen.Render(&window);
 
-        switch (currentState) {
-    case loading:
-      frameCounter++;
-      // Catch 2 seconds passing
-      if (frameCounter > 2 * delta) {
-        currentState = menu;
-      }
-      break;
-    case menu:
-      frameCounter = 0;
-      if (playButton.IsPressed()) {
-        currentState = loading;
-      }
-      break;
-    case levelSelect:
-      break; // TODO
-    case level:
-      break; // TODO
-    default:
-      break;
-    }
+				break;
+			case menu:
+				mainMenu.Render(&window);
 
-    // ---------------------------------
-    // Draw
-    // ---------------------------------
-    BeginDrawing();
-    { // Drawing is done in a separate scope for isolation and organization purposes
-      switch (currentState) {
-      case loading:
-        loadingScreen.Render(&window);
+				raylib::DrawText(title.c_str(), GetScreenWidth() / 10 - 64, GetScreenHeight() / 10, 40, raylib::Color::White());
+				break;
+			default:
+				exit(1);
+				break;
+			}
+		}
 
-        break;
-      case menu:
-        mainMenu.Render(&window);
+		EndDrawing();
+	}
 
-        raylib::DrawText(title.c_str(), GetScreenWidth() / 10 - 64, GetScreenHeight() / 10, 40, raylib::Color::White());
-        break;
-      default:
-        exit(1);
-        break;
-      }
-    }
-
-    EndDrawing();
-  }
-
-  return 0;
+	return 0;
 }
