@@ -3,5 +3,6 @@
     "LIGHTGRAY",
     "raylib",
     "RAYWHITE"
-  ]
+  ],
+  "C_Cpp.clang_format_fallbackStyle": "{BasedOnStyle: LLVM, UseTab: Always, IndentWidth: 4, TabWidth: 4",
 }
