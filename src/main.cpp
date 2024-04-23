@@ -1,29 +1,27 @@
 // -- Headers -- //
 #include <iostream>
-#include "raylib-cpp.hpp"
-#include "string"
+#include <string>
 #include <cstring>
-#include "entities.hpp"
-#include "screen.hpp"
-#include "functional"
-#include "vector"
+#include <functional>
+#include <vector>
+#include "raylib-cpp.hpp"
 
 #include "console.cpp"
+#include "entities.hpp"
+#include "menu.hpp"
 
 #define VERSION "dev"
 
 using namespace std;
 using namespace ui;
-using namespace game;
-
-/// @brief Enum used to determine what game logic should be running at a given moment.
-enum gameState { loading = 0, menu, levelSelect, level };
+// using namespace game;
 
 int main(int argv, char *argc[]) {
 	// Check CLI args
-	if ((argv >= 2) && (!strcmp(argc[1], "debug"))) console::debug((console::level = true) ? "Debugging!" : "");  // NOLINT
+	if ((argv >= 2) && (!strcmp(argc[1], "debug")))
+		console::debug((console::level = true) ? "Debugging!" : ""); // NOLINT
 
-	//  Persistent callstacks. Probably not a good idea to use these, but they're here.
+	//  Persistent callStacks. Probably not a good idea to use these, but they're here.
 	std::vector<std::function<bool()>> LogicStack, DrawStack;
 	console::level = true;
 	const unsigned int screenWidth = 800, screenHeight = 800;
@@ -31,14 +29,12 @@ int main(int argv, char *argc[]) {
 	// GameState CurrentState = GameState();
 	//  CurrentState.DrawStack.insert({[](){console::debug("balls");}, true})
 
-	gameState currentState = loading; // set initial scene for game
-	int delta = 60; // deltaTime/framerate target
+	game::gameState currentState = game::loading; // set initial scene for game
+	int delta = 60;								  // deltaTime/framerate target
 
 	raylib::Window window(screenWidth, screenHeight, title); // Initialise window and window title
 
 	int frameCounter = 0; // Frame utility. Used to check time
-
-
 
 	// Set Target fps to deltaTime
 	SetTargetFPS(delta);
@@ -65,26 +61,30 @@ int main(int argv, char *argc[]) {
 		// Game Logic
 		// ---------------------------------
 
-        for (unsigned int i = 0; i < LogicStack.size(); i++) if (LogicStack[i]()) LogicStack.erase(LogicStack.begin() + i);
-        for (unsigned int i = 0; i < CurrentState.LogicStack.size(); i++) if (CurrentState.LogicStack[i]()) CurrentState.LogicStack.erase(CurrentState.LogicStack.begin() + i);
-
+		for (unsigned int i = 0; i < LogicStack.size(); i++)
+			if (LogicStack[i]())
+				LogicStack.erase(LogicStack.begin() + i);
+		/*for (unsigned int i = 0; i < CurrentState.LogicStack.size(); i++)
+			if (CurrentState.LogicStack[i]())
+				CurrentState.LogicStack.erase(CurrentState.LogicStack.begin() + i);
+		*/
 		switch (currentState) {
-		case loading:
+		case game::loading:
 			frameCounter++;
 			// Catch 2 seconds passing
 			if (frameCounter > 2 * delta) {
-				currentState = menu;
+				currentState = game::menu;
 			}
 			break;
-		case menu:
+		case game::menu:
 			frameCounter = 0;
 			if (playButton.IsPressed()) {
-				currentState = loading;
+				currentState = game::loading;
 			}
 			break;
-		case levelSelect:
+		case game::levelSelect:
 			break; // TODO
-		case level:
+		case game::level:
 			break; // TODO
 		default:
 			break;
@@ -96,11 +96,11 @@ int main(int argv, char *argc[]) {
 		BeginDrawing();
 		{ // Drawing is done in a separate scope for isolation and organization purposes
 			switch (currentState) {
-			case loading:
+			case game::loading:
 				loadingScreen.Render(&window);
 
 				break;
-			case menu:
+			case game::menu:
 				mainMenu.Render(&window);
 
 				raylib::DrawText(title.c_str(), GetScreenWidth() / 10 - 64, GetScreenHeight() / 10, 40, raylib::Color::White());
