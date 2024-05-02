@@ -5,8 +5,7 @@
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Byte-Sized-Games/logJam/rust-mac.yml?style=for-the-badge&label=Mac%20Build)
 
 [![Static Badge](https://img.shields.io/badge/Nightly%20-%20Linux%20Build%20-%20purple?style=for-the-badge&logo=linux&logoColor=ffffff&logoSize=auto&labelColor=585858&color=8A2BE2)](https://nightly.link/Byte-Sized-Games/logJam/workflows/rust-linux/main/logger_nightly)
-[![Static Badge](https://img.shields.io/badge/Nightly%20-%20Windows%20Build%20-%20blue?style=for-the-badge&logo=windows&logoColor=ffffff&logoSize=auto&labelColor=585858&color=357EC7)
-](https://nightly.link/Byte-Sized-Games/logJam/workflows/rust-windows/main/logger_nightly)
+[![Static Badge](https://img.shields.io/badge/Nightly%20-%20Windows%20Build%20-%20blue?style=for-the-badge&logo=windows&logoColor=ffffff&logoSize=auto&labelColor=585858&color=357EC7)](https://nightly.link/Byte-Sized-Games/logJam/workflows/rust-windows/main/logger_nightly)
 [![Static Badge](https://img.shields.io/badge/Nightly%20-%20Mac%20Build%20-%20black?style=for-the-badge&labelColor=565656&color=000000)
 ](https://nightly.link/Byte-Sized-Games/logJam/workflows/rust-mac/main/logger_nightly)
 
