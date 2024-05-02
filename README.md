@@ -23,3 +23,12 @@
 Instructions are platform agnostic. More or less.
 Go to [rustup](https://rustup.rs/) to install rust for the system of your choice if you don't have it installed.
 Then, clone the repo with `git clone https://github.com/Byte-Sized-Games/logJam/` then open a terminal in the directory and run `cargo build --package executor` to build for your system.
+
+### Binaries
+
+Nightly binaries are also available via the nightly link platform. Click the badges at the top of the project to download them
+
+> Game quality & completeness not guaranteed
+
+Whenever we hit a release or tag, you'll find them on the releases page.
+If and when we hit 1.0.0, an itch.io page will also be available!
