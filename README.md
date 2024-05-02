@@ -16,7 +16,7 @@
 ### ⚙️ Technologies
 
 - Programmed in Rust for stability & speed
-- Built with Fyrox game engine
+- Built with macroquad crate
 
 ## Building this project
 
