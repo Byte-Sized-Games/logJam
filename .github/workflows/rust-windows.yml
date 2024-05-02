@@ -24,4 +24,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: logger_nightly
-          path: target/debug/logjam
+          path: target/debug/logjam.exe
