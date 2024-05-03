@@ -4,19 +4,21 @@
 
 // Declare modules
 mod entities;
+mod screen;
 mod ui;
 // ---
 
 use macroquad::prelude::*;
-use ui::Ui;
+use ui::*;
 
 #[macroquad::main("logjam")]
 async fn main() {
-    let button = ui::button::Button::new(50.0, 100.0, "Play".to_string(), DARKBLUE, WHITE);
+    let button = button::Button::new(50.0, 100.0, "Play".to_string(), DARKBLUE, WHITE);
+    let title = text_object::TextObject::new(30.0, 40.0, "logger".to_string(), 45.0, WHITE);
     loop {
-        clear_background(DARKGRAY);
+        clear_background(SKYBLUE);
 
-        draw_text("IT WORKS!", 20.0, 40.0, 30.0, WHITE);
+        title.render();
         button.render();
 
         // Get button clicked
