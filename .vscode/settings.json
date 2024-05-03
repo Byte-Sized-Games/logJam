@@ -1,4 +1,11 @@
 {
-  "cSpell.words": ["Fyrox", "LIGHTGRAY", "macroquad", "raylib", "RAYWHITE"],
+  "cSpell.words": [
+    "Fyrox",
+    "LIGHTGRAY",
+    "macroquad",
+    "raylib",
+    "RAYWHITE",
+    "SKYBLUE"
+  ],
   "C_Cpp.clang_format_fallbackStyle": "{BasedOnStyle: llvm, UseTab: Always, IndentWidth: 4, TabWidth: 4}"
 }
