@@ -7,11 +7,11 @@ use macroquad::prelude::*;
 use super::Ui;
 
 pub struct Button {
-    x: f32,
-    y: f32,
+    pub x: f32,
+    pub y: f32,
     content: String,
-    background_colour: Color,
-    foreground_colour: Color,
+    pub background_colour: Color,
+    pub foreground_colour: Color,
 }
 
 impl Button {

@@ -14,3 +14,15 @@ pub trait Ui {
         false
     }
 }
+
+impl<T: ?Sized + Ui> Ui for &'_ T {
+    fn render(&self) {
+        <T as Ui>::render(&**self);
+    }
+}
+
+impl<T: ?Sized + Ui> Ui for &'_ mut T {
+    fn render(&self) {
+        <T as Ui>::render(&**self);
+    }
+}
