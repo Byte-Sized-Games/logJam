@@ -41,7 +41,19 @@ mod runtime {
         init_scene: vec![],
     };
 }
+
 fn load_state() {}
+
+enum RenderFn {
+    Closure(fn() -> bool),
+}
+
+const RENDER_SCENE: RenderFn = RenderFn::Closure(|| -> bool {
+    for element in runtime::CURRENT_STATE::init_scene.iter() {}
+    return true;
+});
+
+// #[macroquad::main("logjam")]
 
 // Constants
 const WINDOW_HEIGHT: u16 = 800;
