@@ -13,7 +13,7 @@ use entities::Player;
 // Namespaces
 use macroquad::prelude::*;
 use screen::*;
-use ui::*;
+use ui::{prelude::*, Ui};
 // ---
 
 // Constants
@@ -24,30 +24,37 @@ const WINDOW_WIDTH: u16 = 800;
 #[macroquad::main(window_conf)]
 
 async fn main() {
-    let mut master_state = runtime::Scene {
-        function_stack: vec![],
-    };
-
-    let button = button::Button::new(50.0, 100.0, "Play".to_string(), DARKBLUE, WHITE);
-    let title = text_object::TextObject::new(30.0, 40.0, "logger".to_string(), 45.0, WHITE);
-    let title_screen = Menu {
-        elements: vec![Box::new(button), Box::new(title)],
-    };
-    let player = Player::new(
+    let mut player = Player::new(
         400.0,
         400.0,
         load_texture("assets/miku.png").await.unwrap(),
         WHITE,
     );
 
-    master_state.function_stack.push(Box::new(title_screen));
-    master_state.function_stack.push(Box::new(player));
+    let button = Button::new(50.0, 100.0, "Play".to_string(), DARKBLUE, WHITE);
+    let title = TextObject::new(30.0, 40.0, "logger".to_string(), 45.0, WHITE);
+    let title_screen: Menu = Menu {
+        elements: vec![Box::new(&button), Box::new(&title)],
+    };
+
+    let mut master_state = runtime::Scene {
+        function_stack: vec![],
+    };
+    master_state.function_stack.push(Box::new(&mut player));
+    master_state.function_stack.push(Box::new(&title_screen));
 
     loop {
         clear_background(SKYBLUE);
 
         master_state.run();
 
+        if button.interacted() {
+            println!("Interacted!");
+        }
+
+        if is_key_down(KeyCode::Escape) {
+            break;
+        }
         next_frame().await
     }
 }
