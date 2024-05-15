@@ -8,29 +8,28 @@ mod screen;
 mod ui;
 // ---
 
+// Namespaces
 use macroquad::prelude::*;
+use screen::*;
 use ui::*;
+// ---
 
-mod runtime {
+// Constants
+const WINDOW_HEIGHT: u32 = 800;
+const WINDOW_WIDTH: u32 = 800;
+// ---
 
-    /// @brief master logic callstack. not recommended in most cases, try pushing to a scene-specific callstack to avoid transition hell
-    static mut LOGIC_STACK : Vec<Vec<bool>> = vec![];
-    /// @brief master draw callstack. not recommended in most cases, try pushing to a scene-specific callstack to avoid transition hell
-    static mut DRAW_STACK : Vec<Vec<bool>> = vec![];
-
-    // static mut CURRENT_SCENE = ;
-
-}
-
-#[macroquad::main("logjam")]
+#[macroquad::main(window_conf)]
 async fn main() {
     let button = button::Button::new(50.0, 100.0, "Play".to_string(), DARKBLUE, WHITE);
     let title = text_object::TextObject::new(30.0, 40.0, "logger".to_string(), 45.0, WHITE);
+    let title_screen = Menu {
+        elements: vec![Box::new(&button), Box::new(&title)],
+    };
     loop {
         clear_background(SKYBLUE);
 
-        title.render();
-        button.render();
+        title_screen.render();
 
         // Get button clicked
         if button.interacted() {
@@ -40,5 +39,15 @@ async fn main() {
         }
 
         next_frame().await
+    }
+}
+
+/// Function to initialise game window
+fn window_conf() -> Conf {
+    Conf {
+        window_title: "logger".to_owned(),
+        window_width: WINDOW_WIDTH as i32,
+        window_height: WINDOW_HEIGHT as i32,
+        ..Default::default()
     }
 }
