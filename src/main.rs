@@ -20,7 +20,7 @@ struct GameState {
     /// @brief scene-specific draw callstack. runs after master callstack on each priority level
     draw_stack: Vec<Vec<bool>>,
     /// @brief vector of elements drawn on first state call via a draw_stack item
-    init_scene: Vec<*Entity>
+    init_scene: Vec<*const Entity>
 }
 
 
