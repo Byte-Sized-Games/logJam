@@ -8,6 +8,7 @@ mod screen;
 mod ui;
 // ---
 
+use entities::{Entity, Player};
 // Namespaces
 use macroquad::prelude::*;
 use screen::*;
@@ -26,17 +27,20 @@ async fn main() {
     let title_screen = Menu {
         elements: vec![Box::new(&button), Box::new(&title)],
     };
+    let mut player = Player::new(
+        400.0,
+        400.0,
+        load_texture("assets/miku.png").await.unwrap(),
+        WHITE,
+    );
     loop {
         clear_background(SKYBLUE);
 
         title_screen.render();
 
-        // Get button clicked
-        if button.interacted() {
-            println!("Pressed!");
-        } else {
-            println!("Not pressed!");
-        }
+        // Player listens for input, then renders
+        player.listen();
+        player.render();
 
         next_frame().await
     }
