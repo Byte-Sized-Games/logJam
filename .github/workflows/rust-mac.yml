@@ -2,7 +2,7 @@ name: Rust MacOS
 
 on:
   push:
-    branches: ["main"]
+    branches: ["mdw-gamestate"]
   pull_request:
     branches: ["main"]
 
