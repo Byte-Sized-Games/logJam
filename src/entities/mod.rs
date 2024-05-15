@@ -28,16 +28,14 @@ impl Player {
 
     pub fn listen(&mut self) {
         // Vertical movement
-        if is_key_down(KeyCode::W) || is_key_down(KeyCode::Up) {
-            self.y -= 2.0;
-        } else if is_key_down(KeyCode::S) || is_key_down(KeyCode::Down) {
-            self.y += 2.0;
-        }
-        // Horizontal movement
-        if is_key_down(KeyCode::A) || is_key_down(KeyCode::Left) {
-            self.x -= 2.0;
-        } else if is_key_down(KeyCode::D) || is_key_down(KeyCode::Right) {
-            self.x += 2.0;
+        if is_key_pressed(KeyCode::W) || is_key_pressed(KeyCode::Up) {
+            self.y -= 50.0;
+        } else if is_key_pressed(KeyCode::S) || is_key_pressed(KeyCode::Down) {
+            self.y += 50.0;
+        } else if is_key_pressed(KeyCode::A) || is_key_pressed(KeyCode::Left) {
+            self.x -= 50.0;
+        } else if is_key_pressed(KeyCode::D) || is_key_pressed(KeyCode::Right) {
+            self.x += 50.0;
         }
     }
 }
@@ -49,6 +47,13 @@ impl Entity for Player {
 }
 
 impl Call for Player {
+    fn call(&mut self) {
+        self.listen();
+        self.render();
+    }
+}
+
+impl Call for &mut Player {
     fn call(&mut self) {
         self.listen();
         self.render();
