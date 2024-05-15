@@ -25,6 +25,16 @@ impl Screen for Menu<'_> {
 
 impl Call for Menu<'_> {
     fn call(&mut self) {
-        self.render();
+        for element in &self.elements {
+            element.render();
+        }
+    }
+}
+
+impl Call for &Menu<'_> {
+    fn call(&mut self) {
+        for element in &self.elements {
+            element.render();
+        }
     }
 }

@@ -7,6 +7,11 @@ pub mod button;
 pub mod text_object;
 // ---
 
+pub mod prelude {
+    pub use super::button::*;
+    pub use super::text_object::*;
+}
+
 pub trait Ui {
     fn render(&self);
 
