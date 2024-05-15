@@ -43,8 +43,8 @@ fn load_state() {
 #[macroquad::main("logjam")]
 
 // Constants
-const WINDOW_HEIGHT: u32 = 800;
-const WINDOW_WIDTH: u32 = 800;
+const WINDOW_HEIGHT: u16 = 800;
+const WINDOW_WIDTH: u16 = 800;
 // ---
 
 #[macroquad::main(window_conf)]
