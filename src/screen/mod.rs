@@ -3,6 +3,7 @@
 //
 
 // Namespaces
+use super::runtime::Call;
 use super::ui;
 // ---
 
@@ -19,5 +20,11 @@ impl Screen for Menu<'_> {
         for element in &self.elements {
             element.render();
         }
+    }
+}
+
+impl Call for Menu<'_> {
+    fn call(&mut self) {
+        self.render();
     }
 }

@@ -2,6 +2,7 @@
 // created on 02/04/24 by Michael Ward
 //
 
+use super::runtime::Call;
 use macroquad::prelude::*;
 
 pub trait Entity {
@@ -44,5 +45,12 @@ impl Player {
 impl Entity for Player {
     fn render(&self) {
         draw_texture(&self.texture, self.x, self.y, self.colour);
+    }
+}
+
+impl Call for Player {
+    fn call(&mut self) {
+        self.listen();
+        self.render();
     }
 }
