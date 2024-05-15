@@ -23,7 +23,6 @@ struct GameState {
     init_scene: Vec<*const dyn Ui>
 }
 
-
 mod runtime {
     use crate::GameState;
 
@@ -42,9 +41,17 @@ mod runtime {
     };
 
 }
-fn load_state() {
 
+enum RenderFn {
+    Closure(fn() -> bool),
 }
+
+const RENDER_SCENE : RenderFn = RenderFn::Closure(|| -> bool {
+    for element in runtime::CURRENT_STATE::init_scene.iter() {
+
+    }
+    return true;
+});
 
 // #[macroquad::main("logjam")]
 
