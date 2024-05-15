@@ -35,7 +35,7 @@ mod runtime {
 
     /// @brief currently rendering GameState
     // TODO: implement init scene
-    static mut CURRENT_STATE: GameState = GameState {
+    pub static mut CURRENT_STATE: GameState = GameState {
         logic_stack: vec![],
         draw_stack: vec![],
         init_scene: vec![],
@@ -52,8 +52,6 @@ const RENDER_SCENE: RenderFn = RenderFn::Closure(|| -> bool {
     for element in runtime::CURRENT_STATE::init_scene.iter() {}
     return true;
 });
-
-// #[macroquad::main("logjam")]
 
 // Constants
 const WINDOW_HEIGHT: u16 = 800;
