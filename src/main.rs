@@ -11,6 +11,17 @@ mod ui;
 use macroquad::prelude::*;
 use ui::*;
 
+mod runtime {
+
+    /// @brief master logic callstack. not recommended in most cases, try pushing to a scene-specific callstack to avoid transition hell
+    static mut LOGIC_STACK : Vec<Vec<bool>> = vec![];
+    /// @brief master draw callstack. not recommended in most cases, try pushing to a scene-specific callstack to avoid transition hell
+    static mut DRAW_STACK : Vec<Vec<bool>> = vec![];
+
+    // static mut CURRENT_SCENE = ;
+
+}
+
 #[macroquad::main("logjam")]
 async fn main() {
     let button = button::Button::new(50.0, 100.0, "Play".to_string(), DARKBLUE, WHITE);
