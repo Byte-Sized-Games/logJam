@@ -35,7 +35,7 @@ mod runtime {
 
     /// @brief currently rendering GameState
     // TODO: implement init scene
-    static mut CURRENT_STATE: GameState = GameState {
+    pub static mut CURRENT_STATE: GameState = GameState {
         logic_stack: vec![],
         draw_stack: vec![],
         init_scene: vec![],
@@ -53,15 +53,12 @@ const RENDER_SCENE: RenderFn = RenderFn::Closure(|| -> bool {
     return true;
 });
 
-// #[macroquad::main("logjam")]
-
 // Constants
 const WINDOW_HEIGHT: u16 = 800;
 const WINDOW_WIDTH: u16 = 800;
 // ---
 
 #[macroquad::main(window_conf)]
-
 async fn main() {
     let button = button::Button::new(50.0, 100.0, "Play".to_string(), DARKBLUE, WHITE);
     let title = text_object::TextObject::new(30.0, 40.0, "logger".to_string(), 45.0, WHITE);
