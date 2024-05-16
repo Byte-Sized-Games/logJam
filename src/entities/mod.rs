@@ -47,14 +47,7 @@ impl Entity for Player {
 }
 
 impl Call for Player {
-    fn call(&mut self) {
-        self.listen();
-        self.render();
-    }
-}
-
-impl Call for &mut Player {
-    fn call(&mut self) {
+    fn call_mut(&mut self) {
         self.listen();
         self.render();
     }

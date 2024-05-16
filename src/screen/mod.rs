@@ -7,32 +7,12 @@ use super::runtime::Call;
 use super::ui;
 // ---
 
-pub trait Screen {
-    fn render(&self);
-}
-
 pub struct Menu<'m> {
     pub elements: Vec<Box<dyn ui::Ui + 'm>>,
 }
 
-impl Screen for Menu<'_> {
-    fn render(&self) {
-        for element in &self.elements {
-            element.render();
-        }
-    }
-}
-
 impl Call for Menu<'_> {
-    fn call(&mut self) {
-        for element in &self.elements {
-            element.render();
-        }
-    }
-}
-
-impl Call for &Menu<'_> {
-    fn call(&mut self) {
+    fn call(&self) {
         for element in &self.elements {
             element.render();
         }
