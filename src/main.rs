@@ -8,7 +8,7 @@ mod screen;
 mod ui;
 // ---
 
-use entities::Player;
+use entities::player::*;
 // Namespaces
 use macroquad::prelude::*;
 use screen::*;

@@ -1,13 +1,10 @@
 //
-// created on 02/04/24 by Michael Ward
+// created on 16/05/24 by Michael Ward
 //
 
-use super::Call;
+use super::Entity;
+use crate::Call;
 use macroquad::prelude::*;
-
-pub trait Entity {
-    fn render(&self);
-}
 
 pub struct Player {
     pub x: f32,
@@ -27,7 +24,6 @@ impl Player {
     }
 
     pub fn listen(&mut self) {
-        // Vertical movement
         if is_key_pressed(KeyCode::W) || is_key_pressed(KeyCode::Up) {
             self.y -= 50.0;
         } else if is_key_pressed(KeyCode::S) || is_key_pressed(KeyCode::Down) {
@@ -42,7 +38,12 @@ impl Player {
 
 impl Entity for Player {
     fn render(&self) {
-        draw_texture(&self.texture, self.x, self.y, self.colour);
+        draw_texture(
+            &self.texture,
+            self.x - (self.texture.width() / 2.0),
+            self.y - (self.texture.height() / 2.0),
+            self.colour,
+        );
     }
 }
 
