@@ -13,9 +13,16 @@ pub mod prelude {
     pub use super::Ui;
 }
 
+/// Trait for any structure related to rendering the User interface.
+/// Used in combination with the Menu struct to bundle multiple elements.
 pub trait Ui {
+    /// Displays element on screen.
+    /// Required for any implementation
     fn render(&self);
 
+    /// Returns interaction with object.
+    /// Used to handle actions with interactive elements.
+    /// Ex. Buttons, sliders
     fn interacted(&self) -> bool {
         false
     }
