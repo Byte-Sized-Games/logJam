@@ -2,7 +2,7 @@
 // created on 02/04/24 by Michael Ward
 //
 
-use super::runtime::Call;
+use super::Call;
 use macroquad::prelude::*;
 
 pub trait Entity {
@@ -49,6 +49,8 @@ impl Entity for Player {
 impl Call for Player {
     fn call_mut(&mut self) {
         self.listen();
+    }
+    fn call(&self) {
         self.render();
     }
 }

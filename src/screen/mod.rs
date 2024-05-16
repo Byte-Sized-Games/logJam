@@ -3,8 +3,8 @@
 //
 
 // Namespaces
-use super::runtime::Call;
 use super::ui;
+use super::Call;
 // ---
 
 pub struct Menu<'m> {
