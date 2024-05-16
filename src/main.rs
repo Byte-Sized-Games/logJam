@@ -13,7 +13,7 @@ use entities::Player;
 // Namespaces
 use macroquad::prelude::*;
 use screen::*;
-use ui::{prelude::*, Ui};
+use ui::prelude::*;
 // ---
 
 // Constants
@@ -39,14 +39,15 @@ async fn main() {
 
     let mut master_state = runtime::Scene {
         function_stack: vec![],
+        // draw_stack: vec![],
     };
-    master_state.function_stack.push(Box::new(&mut player));
-    master_state.function_stack.push(Box::new(&title_screen));
+    master_state.push_mut(&mut player);
+    master_state.push(&title_screen);
 
     loop {
         clear_background(SKYBLUE);
 
-        master_state.run();
+        master_state.tick();
 
         if button.interacted() {
             println!("Interacted!");
