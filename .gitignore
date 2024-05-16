@@ -1,4 +1,1 @@
-/target/debug
-/target/.rustc_info.json
-/target/.rustdoc_fingerprint.json
-/target/CACHEDIR.TAG
+/target/
