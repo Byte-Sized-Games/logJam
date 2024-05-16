@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["WINDOW_HEIGHT","WINDOW_WIDTH"],"fn":["amain","main","window_conf"],"mod":["entities","screen","ui"],"struct":["Scene"],"trait":["Call"]};
