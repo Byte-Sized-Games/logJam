@@ -10,6 +10,7 @@ pub mod text_object;
 pub mod prelude {
     pub use super::button::*;
     pub use super::text_object::*;
+    pub use super::Ui;
 }
 
 pub trait Ui {
