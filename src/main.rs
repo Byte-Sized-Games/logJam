@@ -39,14 +39,17 @@ async fn main() {
         elements: vec![Box::new(&button), Box::new(&title)],
     };
 
+    let mut main_level = Level::new("test_cfg.toml").await;
+
     let mut master_state = Scene::init();
 
-    // Added in reverse order
+    master_state.push_mut(&mut main_level);
     master_state.push_mut(&mut player);
     master_state.push(&title_screen);
+    master_state.push_fn(0, test_hello);
 
     loop {
-        clear_background(SKYBLUE);
+        clear_background(LIME);
 
         master_state.tick();
 
@@ -69,6 +72,11 @@ fn window_conf() -> Conf {
         window_height: WINDOW_HEIGHT as i32,
         ..Default::default()
     }
+}
+
+enum RunCode {
+    Ok,
+    Err(&'static str),
 }
 
 /// Callable logic or draw data to be run on the game loop
@@ -98,34 +106,71 @@ impl<T: ?Sized + Call> Call for &'_ mut T {
 /// Container for call objects.
 /// Bundle and call all gameObjects at once
 struct Scene<'s> {
-    pub function_stack: Vec<Box<dyn Call + 's>>, // Used to run/handle game logic
+    pub function_stack: Vec<Vec<fn() -> RunCode>>, // Used to run/handle game logic
+    pub entity_stack: Vec<Box<dyn Call + 's>>,     // Used to handle entities
 }
 
 impl<'s> Scene<'s> {
     /// Constructor.
-    /// Initializes with empty function stack
+    /// Initializes with empty entity stack & one function stack
     fn init() -> Self {
         Scene {
-            function_stack: vec![],
+            function_stack: vec![vec![]],
+            entity_stack: vec![],
         }
     }
-    /// Call all function logic
+    /// Calls all function & entity logic
     fn tick(&mut self) {
-        for function in &mut self.function_stack {
-            function.call_mut();
-            function.call();
+        // Function Logic
+        let mut i = 0;
+        while i < self.function_stack.len() {
+            // Roll through stacks
+            let mut x = 0;
+            while x < self.function_stack[i].len() {
+                // Roll through functions
+                let val = self.function_stack[i][x]();
+                match val {
+                    RunCode::Err(msg) => {
+                        panic!("Function #{x} failed on Stack #{i} with message: {msg}")
+                    }
+                    _ => (),
+                }
+                x += 1;
+            }
+            i += 1;
+        }
+        // Entity Logic
+        for entity in &mut self.entity_stack {
+            entity.call_mut(); // Mutate stuff
+            entity.call(); // Use stuff
         }
     }
 
     /// Push value as mutable reference
     /// For player, maps & other gameObjects
     fn push_mut<T: Call>(&mut self, item: &'s mut T) {
-        self.function_stack.push(Box::new(item));
+        self.entity_stack.push(Box::new(item));
     }
 
     /// Push value as reference
     /// For UI and the like
     fn push<T: Call>(&mut self, item: &'s T) {
-        self.function_stack.push(Box::new(item));
+        self.entity_stack.push(Box::new(item));
     }
+
+    /// Push function to the function stack.
+    /// Requires stack to exist
+    fn push_fn(&mut self, stack: usize, value: fn() -> RunCode) {
+        self.function_stack[stack].push(value);
+    }
+
+    /// Creates new function stack.
+    fn new_stack(&mut self) {
+        self.function_stack.push(vec![]);
+    }
+}
+
+fn test_hello() -> RunCode {
+    println!("Hello, World!");
+    RunCode::Ok
 }

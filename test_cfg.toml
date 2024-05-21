@@ -1,0 +1,21 @@
+name = "TestMap"
+hi_score = 0
+width = 600
+height = 600
+tiles = [
+    [
+        "Water",
+        "Water",
+        "Water",
+    ],
+    [
+        "Log",
+        "Water",
+        "Log",
+    ],
+    [
+        "Log",
+        "Log",
+        "Water",
+    ],
+]
