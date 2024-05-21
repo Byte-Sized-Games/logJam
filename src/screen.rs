@@ -37,12 +37,7 @@ pub struct Level {
 impl Level {
     pub async fn new(path: &str) -> Self {
         Level {
-            player: player::Player::new(
-                0.0,
-                0.0,
-                load_texture("assets/miku.png").await.unwrap(),
-                WHITE,
-            ),
+            player: player::Player::new(load_texture("assets/miku.png").await.unwrap(), WHITE),
             map: map::parse_config(path),
         }
     }
@@ -50,7 +45,11 @@ impl Level {
 
 impl Call for Level {
     fn call_mut(&mut self) {
-        self.map.call();
+        // Update values
         self.player.call_mut();
+        map::check_tile(&self.map.tiles[self.player.position.0][self.player.position.1]);
+        // Draw
+        self.map.call();
+        self.player.call();
     }
 }
