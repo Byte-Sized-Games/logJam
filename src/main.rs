@@ -8,7 +8,6 @@ mod screen;
 mod ui;
 // ---
 
-use entities::player::*;
 // Namespaces
 use macroquad::prelude::*;
 use screen::*;
@@ -26,13 +25,6 @@ const WINDOW_WIDTH: u16 = 800;
 #[macroquad::main(window_conf)]
 
 async fn main() {
-    let mut player = Player::new(
-        400.0,
-        400.0,
-        load_texture("assets/miku.png").await.unwrap(),
-        WHITE,
-    );
-
     let button = Button::new(50.0, 100.0, "Play".to_string(), DARKBLUE, WHITE);
     let title = TextObject::new(30.0, 40.0, "logger".to_string(), 45.0, WHITE);
     let title_screen: Menu = Menu {
@@ -44,9 +36,8 @@ async fn main() {
     let mut master_state = Scene::init();
 
     master_state.push_mut(&mut main_level);
-    master_state.push_mut(&mut player);
     master_state.push(&title_screen);
-    master_state.push_fn(0, test_hello);
+    master_state.push_fn(0, draw_grid);
 
     loop {
         clear_background(LIME);
@@ -170,7 +161,22 @@ impl<'s> Scene<'s> {
     }
 }
 
-fn test_hello() -> RunCode {
-    println!("Hello, World!");
+// Grid Tools
+
+fn draw_grid() -> RunCode {
+    let mut x = 0.0;
+    let mut y = 0.0;
+
+    while x < screen_width() {
+        draw_rectangle(x - 1.0, y, 2.0, screen_height(), WHITE);
+        x += 100.0;
+    }
+    x = 0.0;
+
+    while y < screen_height() {
+        draw_rectangle(x, y - 1.0, screen_width(), 2.0, WHITE);
+        y += 100.0;
+    }
+
     RunCode::Ok
 }
