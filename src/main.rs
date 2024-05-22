@@ -25,32 +25,43 @@ const WINDOW_WIDTH: u16 = 800;
 #[macroquad::main(window_conf)]
 
 async fn main() {
-    let button = Button::new(50.0, 100.0, "Play".to_string(), DARKBLUE, WHITE);
+    let button = Button::new(
+        50.0,
+        100.0,
+        "Play".to_string(),
+        RunAction::LoadScene(1),
+        DARKBLUE,
+        WHITE,
+    );
     let title = TextObject::new(30.0, 40.0, "logger".to_string(), 45.0, WHITE);
     let title_screen: Menu = Menu {
         elements: vec![Box::new(&button), Box::new(&title)],
     };
 
+    // Initialise Test level
     let mut main_level = Level::new("test_cfg.toml").await;
 
-    let mut master_state = Scene::init();
+    // Initialise Title screen
 
-    master_state.push_mut(&mut main_level);
-    master_state.push(&title_screen);
-    master_state.push_fn(0, draw_grid);
+    // Initialise Scenes & Screens
+    let mut master_state = Game::init();
+    master_state.scene_stack.push(Box::new(&title_screen));
+    master_state.scene_stack.push(Box::new(&mut main_level));
+    master_state.push_fn(0, check_esc);
 
     loop {
         clear_background(LIME);
 
-        master_state.tick();
+        let output = master_state.tick();
 
-        if button.interacted() {
-            println!("Interacted!");
-        }
-
-        if is_key_down(KeyCode::Escape) {
+        if let RunAction::Quit = output {
             break;
         }
+
+        if button.interacted() {
+            master_state.active_scene = 1;
+        }
+
         next_frame().await
     }
 }
@@ -67,7 +78,17 @@ fn window_conf() -> Conf {
 
 enum RunCode {
     Ok,
+    Action(RunAction),
     Err(&'static str),
+}
+
+#[derive(Clone, Copy)]
+enum RunAction {
+    NextScene,
+    LoadScene(usize),
+    PrevScene,
+    Quit,
+    None,
 }
 
 /// Callable logic or draw data to be run on the game loop
@@ -96,22 +117,26 @@ impl<T: ?Sized + Call> Call for &'_ mut T {
 
 /// Container for call objects.
 /// Bundle and call all gameObjects at once
-struct Scene<'s> {
-    pub function_stack: Vec<Vec<fn() -> RunCode>>, // Used to run/handle game logic
-    pub entity_stack: Vec<Box<dyn Call + 's>>,     // Used to handle entities
+struct Game<'s> {
+    function_stack: Vec<Vec<fn() -> RunCode>>, // Used to run/handle game logic
+    entity_stack: Vec<Box<dyn Call + 's>>,     // Used to handle entities
+    scene_stack: Vec<Box<dyn Call + 's>>,      // Game Scenes
+    active_scene: usize,                       // Tracker for active scene
 }
 
-impl<'s> Scene<'s> {
+impl<'s> Game<'s> {
     /// Constructor.
     /// Initializes with empty entity stack & one function stack
     fn init() -> Self {
-        Scene {
+        Game {
             function_stack: vec![vec![]],
             entity_stack: vec![],
+            scene_stack: vec![],
+            active_scene: 0,
         }
     }
     /// Calls all function & entity logic
-    fn tick(&mut self) {
+    fn tick(&mut self) -> RunAction {
         // Function Logic
         let mut i = 0;
         while i < self.function_stack.len() {
@@ -124,6 +149,13 @@ impl<'s> Scene<'s> {
                     RunCode::Err(msg) => {
                         panic!("Function #{x} failed on Stack #{i} with message: {msg}")
                     }
+                    RunCode::Action(act) => match act {
+                        RunAction::Quit => return act,
+                        RunAction::LoadScene(scene) => self.active_scene = scene,
+                        RunAction::None => (),
+                        RunAction::NextScene => self.active_scene += 1,
+                        RunAction::PrevScene => self.active_scene -= 1,
+                    },
                     _ => (),
                 }
                 x += 1;
@@ -135,6 +167,11 @@ impl<'s> Scene<'s> {
             entity.call_mut(); // Mutate stuff
             entity.call(); // Use stuff
         }
+        // Scene logic
+        self.scene_stack[self.active_scene].call();
+        self.scene_stack[self.active_scene].call_mut();
+
+        RunAction::None
     }
 
     /// Push value as mutable reference
@@ -156,8 +193,14 @@ impl<'s> Scene<'s> {
     }
 
     /// Creates new function stack.
-    fn new_stack(&mut self) {
+    fn new_function_stack(&mut self) {
         self.function_stack.push(vec![]);
+    }
+}
+
+impl Call for Game<'_> {
+    fn call_mut(&mut self) {
+        self.tick();
     }
 }
 
@@ -178,5 +221,16 @@ fn draw_grid() -> RunCode {
         y += 100.0;
     }
 
+    RunCode::Ok
+}
+
+// Utilities
+
+/// Basic checker for pressing escape key
+/// Used to quit game for the moment, may become used for a pause menu in the future
+fn check_esc() -> RunCode {
+    if is_key_down(KeyCode::Escape) {
+        return RunCode::Action(RunAction::LoadScene(0));
+    }
     RunCode::Ok
 }

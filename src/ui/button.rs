@@ -5,11 +5,13 @@
 use macroquad::prelude::*;
 
 use super::Ui;
+use crate::RunAction;
 
 pub struct Button {
     pub x: f32,
     pub y: f32,
     content: String,
+    pub action: RunAction,
     pub background_colour: Color,
     pub foreground_colour: Color,
 }
@@ -19,6 +21,7 @@ impl Button {
         x: f32,
         y: f32,
         content: String,
+        action: RunAction,
         background_colour: Color,
         foreground_colour: Color,
     ) -> Button {
@@ -26,8 +29,17 @@ impl Button {
             x,
             y,
             content,
+            action,
             background_colour,
             foreground_colour,
+        }
+    }
+
+    pub fn action(&self) -> RunAction {
+        if self.interacted() {
+            return self.action;
+        } else {
+            return RunAction::None;
         }
     }
 }
