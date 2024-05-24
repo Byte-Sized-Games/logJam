@@ -4,5 +4,7 @@
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/_deps/raylib_cpp-src" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/_deps/raylib_cpp-src/projects/Doxygen/doxygen-awesome-css" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/cmake-build-debug/_deps/raylib_cpp-src" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/cmake-build-debug/_deps/raylib_cpp-src/projects/Doxygen/doxygen-awesome-css" vcs="Git" />
   </component>
 </project>
