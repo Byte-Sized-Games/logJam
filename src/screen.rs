@@ -3,7 +3,7 @@
 //
 
 use macroquad::color::WHITE;
-use macroquad::texture::load_texture;
+use macroquad::texture::Texture2D;
 
 // Namespaces
 use super::entities::*;
@@ -35,9 +35,12 @@ pub struct Level {
 }
 
 impl Level {
-    pub async fn new(path: &str) -> Self {
+    pub async fn new(path: &str, player_texture: &[u8]) -> Self {
         Level {
-            player: player::Player::new(load_texture("assets/miku.png").await.unwrap(), WHITE),
+            player: player::Player::new(
+                Texture2D::from_file_with_format(player_texture, None),
+                WHITE,
+            ),
             map: map::parse_config(path),
         }
     }

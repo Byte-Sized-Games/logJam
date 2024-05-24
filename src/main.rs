@@ -25,6 +25,7 @@ const WINDOW_WIDTH: u16 = 800;
 #[macroquad::main(window_conf)]
 
 async fn main() {
+    let test_miku = include_bytes!("assets/miku.png");
     let button = Button::new(
         50.0,
         100.0,
@@ -39,7 +40,7 @@ async fn main() {
     };
 
     // Initialise Test level
-    let mut main_level = Level::new("test_cfg.toml").await;
+    let mut main_level = Level::new("test_cfg.toml", test_miku).await;
 
     // Initialise Title screen
 
@@ -50,7 +51,7 @@ async fn main() {
     master_state.push_fn(0, check_esc);
 
     loop {
-        clear_background(LIME);
+        clear_background(SKYBLUE);
 
         let output = master_state.tick();
 
