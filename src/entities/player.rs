@@ -30,33 +30,27 @@ impl Player {
         if is_key_down(KeyCode::Space) {
             // Special Movement
             if is_key_pressed(KeyCode::W) || is_key_pressed(KeyCode::Up) {
-                self.y -= 200.0;
                 self.position.1 -= 2;
             } else if is_key_pressed(KeyCode::S) || is_key_pressed(KeyCode::Down) {
-                self.y += 200.0;
                 self.position.1 += 2;
             } else if is_key_pressed(KeyCode::A) || is_key_pressed(KeyCode::Left) {
-                self.x -= 200.0;
                 self.position.0 -= 2;
             } else if is_key_pressed(KeyCode::D) || is_key_pressed(KeyCode::Right) {
-                self.x += 200.0;
                 self.position.0 += 2;
             }
         }
         // Movement
         else if is_key_pressed(KeyCode::W) || is_key_pressed(KeyCode::Up) {
-            self.y -= 100.0;
             self.position.1 -= 1;
         } else if is_key_pressed(KeyCode::S) || is_key_pressed(KeyCode::Down) {
-            self.y += 100.0;
             self.position.1 += 1;
         } else if is_key_pressed(KeyCode::A) || is_key_pressed(KeyCode::Left) {
-            self.x -= 100.0;
             self.position.0 -= 1;
         } else if is_key_pressed(KeyCode::D) || is_key_pressed(KeyCode::Right) {
-            self.x += 100.0;
             self.position.0 += 1;
         }
+        self.x = self.position.0 as f32 * 100.0 + 50.0;
+        self.y = self.position.1 as f32 * 100.0 + 50.0;
     }
 }
 
