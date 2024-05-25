@@ -1,10 +1,17 @@
-use crate::{entities::Tile, Call};
+use crate::{Call, RunCode};
 use macroquad::{
-    color::{BROWN, SKYBLUE},
+    color::{BROWN, RED, SKYBLUE},
     shapes::draw_rectangle,
 };
 use serde::Deserialize;
 use std::fs;
+
+#[derive(Deserialize)]
+pub enum Tile {
+    Water,
+    Log,
+    Exit,
+}
 
 #[derive(Deserialize)]
 pub struct Map {
@@ -24,6 +31,7 @@ impl Map {
                 match tile {
                     Tile::Log => draw_rectangle(x, y, 100.0, 100.0, BROWN),
                     Tile::Water => draw_rectangle(x, y, 100.0, 100.0, SKYBLUE),
+                    Tile::Exit => draw_rectangle(x, y, 100.0, 100.0, RED),
                 }
                 y += 100.0;
             }
@@ -44,9 +52,14 @@ pub fn parse_config(path: &str) -> Map {
     toml::from_str(&config).unwrap()
 }
 
-pub fn check_tile(tile: &Tile) {
+pub fn check_tile(tile: &Tile) -> RunCode {
     match tile {
         Tile::Log => (),
         Tile::Water => println!("wet :("),
+        Tile::Exit => {
+            println!("Victory!");
+            return RunCode::Action(crate::RunAction::Quit);
+        }
     }
+    return RunCode::Ok;
 }
