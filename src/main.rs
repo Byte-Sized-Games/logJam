@@ -98,7 +98,9 @@ trait Call {
     fn call(&self) {}
 
     /// Run entity logic & interaction, such as components or other game information.
-    fn call_mut(&mut self) {}
+    fn call_mut(&mut self) -> RunCode {
+        RunCode::Ok
+    }
 }
 
 impl<T: ?Sized + Call> Call for &'_ T {
@@ -108,8 +110,8 @@ impl<T: ?Sized + Call> Call for &'_ T {
 }
 
 impl<T: ?Sized + Call> Call for &'_ mut T {
-    fn call_mut(&mut self) {
-        <T as Call>::call_mut(&mut **self);
+    fn call_mut(&mut self) -> RunCode {
+        <T as Call>::call_mut(&mut **self)
     }
     fn call(&self) {
         <T as Call>::call(&**self);
@@ -165,7 +167,17 @@ impl<'s> Game<'s> {
         }
         // Entity Logic
         for entity in &mut self.entity_stack {
-            entity.call_mut(); // Mutate stuff
+            match entity.call_mut() {
+                RunCode::Ok => (),
+                RunCode::Err(msg) => (),
+                RunCode::Action(act) => match act {
+                    RunAction::Quit => return act,
+                    RunAction::LoadScene(scene) => self.active_scene = scene,
+                    RunAction::None => (),
+                    RunAction::NextScene => self.active_scene += 1,
+                    RunAction::PrevScene => self.active_scene -= 1,
+                },
+            } // Mutate stuff
             entity.call(); // Use stuff
         }
         // Scene logic
@@ -200,8 +212,8 @@ impl<'s> Game<'s> {
 }
 
 impl Call for Game<'_> {
-    fn call_mut(&mut self) {
-        self.tick();
+    fn call_mut(&mut self) -> RunCode {
+        RunCode::Action(self.tick())
     }
 }
 

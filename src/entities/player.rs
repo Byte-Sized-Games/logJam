@@ -66,8 +66,9 @@ impl Entity for Player {
 }
 
 impl Call for Player {
-    fn call_mut(&mut self) {
+    fn call_mut(&mut self) -> crate::RunCode {
         self.listen();
+        crate::RunCode::Ok
     }
     fn call(&self) {
         self.render();

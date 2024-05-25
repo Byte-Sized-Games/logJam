@@ -5,6 +5,8 @@
 use macroquad::color::WHITE;
 use macroquad::texture::Texture2D;
 
+use crate::RunCode;
+
 // Namespaces
 use super::entities::*;
 use super::ui;
@@ -47,12 +49,13 @@ impl Level {
 }
 
 impl Call for Level {
-    fn call_mut(&mut self) {
+    fn call_mut(&mut self) -> RunCode {
         // Update values
         self.player.call_mut();
-        map::check_tile(&self.map.tiles[self.player.position.0][self.player.position.1]);
         // Draw
         self.map.call();
         self.player.call();
+
+        return map::check_tile(&self.map.tiles[self.player.position.0][self.player.position.1]);
     }
 }
