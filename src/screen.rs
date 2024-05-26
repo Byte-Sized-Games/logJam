@@ -56,6 +56,6 @@ impl Call for Level {
         self.map.call();
         self.player.call();
 
-        return map::check_tile(&self.map.tiles[self.player.position.0][self.player.position.1]);
+        return map::check_tile(&self.map.tiles[self.player.position.0][self.player.position.1], &mut self.player);
     }
 }

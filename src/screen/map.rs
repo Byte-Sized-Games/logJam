@@ -1,10 +1,12 @@
-use crate::{Call, RunCode};
+use crate::{Call, RunAction, RunCode};
 use macroquad::{
     color::{BROWN, RED, SKYBLUE},
     shapes::draw_rectangle,
 };
 use serde::Deserialize;
 use std::fs;
+
+use super::player;
 
 #[derive(Deserialize)]
 pub enum Tile {
@@ -52,13 +54,17 @@ pub fn parse_config(path: &str) -> Map {
     toml::from_str(&config).unwrap()
 }
 
-pub fn check_tile(tile: &Tile) -> RunCode {
+pub fn check_tile(tile: &Tile, player: &mut player::Player) -> RunCode {
     match tile {
         Tile::Log => (),
-        Tile::Water => println!("wet :("),
+        Tile::Water => {
+            println!("wet :(");
+            player.position = (0, 0);
+            return RunCode::Action(RunAction::LoadScene(0));
+        }
         Tile::Exit => {
             println!("Victory!");
-            return RunCode::Action(crate::RunAction::Quit);
+            return RunCode::Action(RunAction::Quit);
         }
     }
     return RunCode::Ok;

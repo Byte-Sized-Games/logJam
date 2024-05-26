@@ -167,9 +167,10 @@ impl<'s> Game<'s> {
         }
         // Entity Logic
         for entity in &mut self.entity_stack {
+            // Mutate stuff
             match entity.call_mut() {
                 RunCode::Ok => (),
-                RunCode::Err(msg) => (),
+                RunCode::Err(msg) => panic!("Entity errored with message: {msg}"),
                 RunCode::Action(act) => match act {
                     RunAction::Quit => return act,
                     RunAction::LoadScene(scene) => self.active_scene = scene,
@@ -177,12 +178,22 @@ impl<'s> Game<'s> {
                     RunAction::NextScene => self.active_scene += 1,
                     RunAction::PrevScene => self.active_scene -= 1,
                 },
-            } // Mutate stuff
+            }
             entity.call(); // Use stuff
         }
         // Scene logic
+        match self.scene_stack[self.active_scene].call_mut() {
+            RunCode::Ok => (),
+            RunCode::Err(msg) => panic!("Scene errored with message: {msg}"),
+            RunCode::Action(act) => match act {
+                RunAction::Quit => return act,
+                RunAction::LoadScene(scene) => self.active_scene = scene,
+                RunAction::None => (),
+                RunAction::NextScene => self.active_scene += 1,
+                RunAction::PrevScene => self.active_scene -= 1,
+            },
+        }
         self.scene_stack[self.active_scene].call();
-        self.scene_stack[self.active_scene].call_mut();
 
         RunAction::None
     }
