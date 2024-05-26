@@ -58,7 +58,7 @@ int main()
 
     sqlite3* DB;
 
-
+    //where leaderboards will be stored
     createDB(dir);
     createTable(dir);
 
