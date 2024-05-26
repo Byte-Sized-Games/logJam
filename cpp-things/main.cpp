@@ -34,7 +34,7 @@ static int createTable(const char* s) {
         // An open database, SQL to be evaluated, Callback function, 1st argument to callback, Error msg written here
         exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &messageError);
         if (exit != SQLITE_OK) {
-            cerr << "Error in createTable function." << endl;
+            cerr << "createTable function failed." << endl;
             sqlite3_free(messageError);
         } else
             cout << "Table created Successfully" << endl;
