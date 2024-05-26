@@ -17,10 +17,9 @@ static int createDB(const char* s)
     return 0;
 }
 
-static int createTable(const char* s)
-{
+static int createTable(const char* s) {
     sqlite3 *DB;
-    char* messageError;
+    char *messageError;
 
     string sql = "CREATE TABLE IF NOT EXISTS LEADERBOARD("
                  "ID INTEGER PRIMARY KEY AUTOINCREMENT, " //no touchy, this is the primary key
@@ -29,8 +28,7 @@ static int createTable(const char* s)
                  "PLAYER       TEXT  NOT NULL, "
                  "TIME   INT, ";
 
-    try
-    {
+    try {
         int exit = 0;
         exit = sqlite3_open(s, &DB);
         // An open database, SQL to be evaluated, Callback function, 1st argument to callback, Error msg written here
@@ -38,13 +36,11 @@ static int createTable(const char* s)
         if (exit != SQLITE_OK) {
             cerr << "Error in createTable function." << endl;
             sqlite3_free(messageError);
-        }
-        else
+        } else
             cout << "Table created Successfully" << endl;
         sqlite3_close(DB);
     }
-    catch (const exception& e)
-    {
+    catch (const exception &e) {
         cerr << e.what();
     }
 
