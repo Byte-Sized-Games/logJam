@@ -26,29 +26,30 @@ impl Player {
     }
 
     pub fn listen(&mut self) {
-        // Special Movement
-        if is_key_down(KeyCode::Space) {
-            // Special Movement
-            if is_key_pressed(KeyCode::W) || is_key_pressed(KeyCode::Up) {
-                self.position.1 -= 2;
-            } else if is_key_pressed(KeyCode::S) || is_key_pressed(KeyCode::Down) {
-                self.position.1 += 2;
-            } else if is_key_pressed(KeyCode::A) || is_key_pressed(KeyCode::Left) {
-                self.position.0 -= 2;
-            } else if is_key_pressed(KeyCode::D) || is_key_pressed(KeyCode::Right) {
-                self.position.0 += 2;
-            }
+        // Grab input
+        let key_input = get_keys_down();
+
+        // Jumping
+        let move_speed = if key_input.contains(&KeyCode::Space) {
+            2
+        } else {
+            1
+        };
+
+        // Horizontal Movement
+        if key_input.contains(&KeyCode::A) || key_input.contains(&KeyCode::Left) {
+            self.position.0 -= move_speed;
+        } else if key_input.contains(&KeyCode::D) || key_input.contains(&KeyCode::Right) {
+            self.position.0 += move_speed;
         }
-        // Movement
-        else if is_key_pressed(KeyCode::W) || is_key_pressed(KeyCode::Up) {
-            self.position.1 -= 1;
-        } else if is_key_pressed(KeyCode::S) || is_key_pressed(KeyCode::Down) {
-            self.position.1 += 1;
-        } else if is_key_pressed(KeyCode::A) || is_key_pressed(KeyCode::Left) {
-            self.position.0 -= 1;
-        } else if is_key_pressed(KeyCode::D) || is_key_pressed(KeyCode::Right) {
-            self.position.0 += 1;
+
+        // Vertical Movement
+        if key_input.contains(&KeyCode::W) || key_input.contains(&KeyCode::Up) {
+            self.position.1 -= move_speed;
+        } else if key_input.contains(&KeyCode::S) || key_input.contains(&KeyCode::Down) {
+            self.position.1 += move_speed;
         }
+
         self.x = self.position.0 as f32 * 100.0 + 50.0;
         self.y = self.position.1 as f32 * 100.0 + 50.0;
     }

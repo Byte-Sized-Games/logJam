@@ -2,11 +2,10 @@
 // created by Michael Ward on 27/05/24
 //
 
-use crate::entities::player;
-use macroquad::prelude::{get_frame_time, get_time};
+use macroquad::prelude::get_time;
 
 pub struct Track {
-    pub bpm: u32,
+    pub bpm: f64,
     pub name: String,
     pub clock: f64,
     pub time: f64,
@@ -17,8 +16,8 @@ impl Track {
         self.clock = get_time();
     }
     pub fn beat(&mut self) -> bool {
-        if self.clock < (self.time + (60.0 / self.bpm as f64)) + 1.0
-            && self.clock > (self.time + (60.0 / self.bpm as f64)) - 1.0
+        if self.clock < (self.time + (60.0 / self.bpm)) + 0.75
+            && self.clock > (self.time + (60.0 / self.bpm)) - 0.75
         {
             self.time = get_time();
             return true;
