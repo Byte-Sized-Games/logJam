@@ -54,8 +54,8 @@ pub fn parse_config(path: &str) -> Map {
     toml::from_str(&config).unwrap()
 }
 
-pub fn check_tile(tile: &Tile, player: &mut player::Player) -> RunCode {
-    match tile {
+pub fn check_tile(map: &mut Map, player: &mut player::Player) -> RunCode {
+    match map.tiles[player.position.0][player.position.1] {
         Tile::Log => (),
         Tile::Water => {
             println!("wet :(");

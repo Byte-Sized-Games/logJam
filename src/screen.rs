@@ -2,9 +2,11 @@
 // created on 02/04/24 by Michael Ward
 //
 
-use macroquad::color::WHITE;
+use macroquad::color::{RED, WHITE};
+use macroquad::prelude::draw_circle;
 use macroquad::texture::Texture2D;
 
+use crate::melodie::Track;
 use crate::RunCode;
 
 // Namespaces
@@ -34,28 +36,38 @@ impl Call for Menu<'_> {
 pub struct Level {
     player: player::Player,
     map: map::Map,
+    track: Track,
+    active: bool,
 }
 
 impl Level {
-    pub async fn new(path: &str, player_texture: &[u8]) -> Self {
+    pub async fn new(path: &str, player_texture: &[u8], track: Track) -> Self {
         Level {
             player: player::Player::new(
                 Texture2D::from_file_with_format(player_texture, None),
                 WHITE,
             ),
             map: map::parse_config(path),
+            track,
+            active: false,
         }
     }
 }
 
 impl Call for Level {
     fn call_mut(&mut self) -> RunCode {
-        // Update values
-        self.player.call_mut();
         // Draw
-        self.map.call();
+        self.map.render();
         self.player.call();
 
-        return map::check_tile(&self.map.tiles[self.player.position.0][self.player.position.1], &mut self.player);
+        // Update values
+        self.track.tick();
+        if self.track.beat() {
+            println!("Beat!");
+            draw_circle(400.0, 750.0, 24.0, RED);
+            self.player.listen();
+        }
+
+        return map::check_tile(&mut self.map, &mut self.player);
     }
 }
