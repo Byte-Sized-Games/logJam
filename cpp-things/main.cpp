@@ -22,7 +22,7 @@ static int createTable(const char* s) {
     char *messageError;
 
     string sql = "CREATE TABLE IF NOT EXISTS LEADERBOARD("
-                 "ID INTEGER PRIMARY KEY AUTOINCREMENT, " //no touchy, this is the primary key
+                 "ID INTEGER PRIMARY KEY AUTOINCREMENT, " //key to get values
                  "LEVEL      INT NOT NULL, "
                  "SCORE     INT NOT NULL, "
                  "PLAYER       TEXT  NOT NULL, "
