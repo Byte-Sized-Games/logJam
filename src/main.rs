@@ -11,7 +11,6 @@ mod ui;
 
 // Namespaces
 use macroquad::prelude::*;
-use melodie::Track;
 use screen::*;
 use ui::prelude::*;
 // ---
@@ -41,8 +40,15 @@ async fn main() {
         elements: vec![Box::new(&button), Box::new(&title)],
     };
 
+    let test = melodie::Track {
+        bpm: 29.0,
+        name: "funky_beats".to_owned(),
+        clock: get_time(),
+        time: get_time(),
+    };
+
     // Initialise Test level
-    let mut main_level = Level::new("test_cfg.toml", test_miku).await;
+    let mut main_level = Level::new("test_cfg.toml", test_miku, test).await;
 
     // Initialise Title screen
 
@@ -52,25 +58,13 @@ async fn main() {
     master_state.scene_stack.push(Box::new(&mut main_level));
     master_state.push_fn(0, check_esc);
 
-    let mut test = melodie::Track {
-        bpm: 15,
-        name: "funky_beats".to_owned(),
-        clock: get_time(),
-        time: get_time(),
-    };
-
     loop {
         clear_background(SKYBLUE);
-        test.tick();
 
         let output = master_state.tick();
 
         if let RunAction::Quit = output {
             break;
-        }
-
-        if test.beat() {
-            draw_circle(400.0, 750.0, 12.0, RED);
         }
 
         if button.interacted() {
