@@ -16,7 +16,7 @@ int main() {
 
     DatabaseManager::outputData();
 
-    DatabaseManager::genLB(3);
+    DatabaseManager::genLB(1);
 
     return 0;
 }
