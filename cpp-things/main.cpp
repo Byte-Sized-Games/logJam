@@ -1,19 +1,22 @@
+#include <iostream>
 #include "DatabaseManager.h"
 
 int main() {
-    const char* dir = "../leaderboards.db";
-    DatabaseManager dbManager(dir);
+    DatabaseManager dbManager;
 
-    DatabaseManager::createDB(dir);
-    DatabaseManager::createTable(dir);
+    DatabaseManager::createDB();
+    DatabaseManager::createTable();
 
+    /*
     int level = 1;
-    int score = 100;
-    std::string player = "Player1";
-    int time = 120;
+    int score = 10000;
+    std::string player = "mr league of legends";
+    DatabaseManager::insertData(level, score, player);
+     */
 
-    // first time with new header system
-    DatabaseManager::insertData(dir, level, score, player, time);
+    DatabaseManager::outputData();
+
+    DatabaseManager::genLB(3);
 
     return 0;
 }
