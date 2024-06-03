@@ -45,7 +45,7 @@
         //},
         .@"raylib-zig" = .{
             .url = "https://github.com/Not-Nik/raylib-zig/archive/devel.tar.gz",
-            .hash = "122050b7d335326149738d72f74c8d1b7bdb89c07b12c1fa9b87fe61b69ae7750a21", // put the actual hash here
+            .hash = "1220d5a31c78da247aaee092be682e3374628dbad1ab631d72df00074c35c61a6bf4", // put the actual hash here
         },
     },
 

@@ -39,3 +39,10 @@ pub const Player = struct {
         raylib.unloadTexture(self.texture);
     }
 };
+
+pub const Tile = enum {
+    start,
+    log,
+    water,
+    end,
+};

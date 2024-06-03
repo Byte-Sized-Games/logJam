@@ -5,6 +5,7 @@
 const std = @import("std");
 const raylib = @import("raylib");
 const Player = @import("entities.zig").Player;
+const screen = @import("screen.zig");
 
 // Initialise Game Values
 
@@ -17,6 +18,8 @@ const arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
 
 pub fn main() !void {
     defer arena.deinit();
+
+    // const level = try toml.decode(screen.Map, arena, levelConfig);
 
     // Initialise Window
     raylib.initAudioDevice();
@@ -38,6 +41,7 @@ pub fn main() !void {
         {
             raylib.clearBackground(raylib.Color.sky_blue);
             raylib.drawText("Logger", 50, 40, 40, raylib.Color.white);
+            // level.draw();
             player.render();
         }
     }
