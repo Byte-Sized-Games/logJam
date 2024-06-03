@@ -4,10 +4,10 @@
 #include <sqlite3.h>
 #include <string>
 
-class DatabaseManager {
+class DatabaseManager_OLD {
 public:
-    DatabaseManager();
-    ~DatabaseManager();
+    DatabaseManager_OLD();
+    ~DatabaseManager_OLD();
     static int createDB();
     static int createTable();
     static void insertData(int level, int score, const std::string& player);
