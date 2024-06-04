@@ -4,8 +4,8 @@
 
 #include "Leaderboards.h"
 
-Leaderboards::Leaderboards() {
-    // Constructor implementation
+Leaderboards::Leaderboards(){
+
 }
 
 Leaderboards::~Leaderboards() {
@@ -31,18 +31,6 @@ int Leaderboards::callback(void* NotUsed, int argc, char** argv, char** azColNam
     }
     std::cout << "\n";
     return 0;
-}
-
-void Leaderboards::insertData(const std::string& sql, std::function<void(sqlite3_stmt*)> bindFunc) {
-    auto now = std::chrono::system_clock::now();
-    std::time_t currentTime = std::chrono::system_clock::to_time_t(now);
-
-    std::string insertSql = "INSERT INTO LEADERBOARD (LEVEL, SCORE, PLAYER, TIME) VALUES (?, ?, ?, ?);";
-
-    DatabaseManager::insertData(insertSql, [bindFunc, currentTime](sqlite3_stmt* stmt) {
-        bindFunc(stmt);
-        sqlite3_bind_int(stmt, 4, static_cast<int>(currentTime));
-    });
 }
 
 void Leaderboards::deleteData(int id, const std::string& sql) {
@@ -138,7 +126,7 @@ void Leaderboards::genLB(int level) {
     sqlite3_close(DB);
 }
 
-void Leaderboards::insertLeaderboardData(int level, int score, const std::string& player) {
+void Leaderboards::insertData(int level, int score, const std::string& player) {
     std::string sql = "INSERT INTO LEADERBOARD (LEVEL, SCORE, PLAYER, TIME) VALUES (?, ?, ?, ?);";
     auto bindFunc = [level, score, player](sqlite3_stmt* stmt) {
         sqlite3_bind_int(stmt, 1, level);
@@ -146,5 +134,6 @@ void Leaderboards::insertLeaderboardData(int level, int score, const std::string
         sqlite3_bind_text(stmt, 3, player.c_str(), -1, SQLITE_STATIC);
         sqlite3_bind_int(stmt, 4, std::time(0)); // Unix timestamp
     };
-    insertData(sql, bindFunc);
+    insertDataHelper(sql, bindFunc);
 }
+

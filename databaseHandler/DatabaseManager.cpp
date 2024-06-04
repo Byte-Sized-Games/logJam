@@ -1,6 +1,4 @@
 #include "DatabaseManager.h"
-#include <iostream>
-#include <chrono>
 
 using namespace std;
 
@@ -18,7 +16,7 @@ int DatabaseManager::createDB() {
     sqlite3* DB;
     int exit = 0;
 
-    exit = sqlite3_open(dir, &DB);
+    sqlite3_open(dir, &DB);
 
     sqlite3_close(DB);
 
@@ -33,7 +31,7 @@ int DatabaseManager::createTable() {
 
     try {
         int exit = 0;
-        exit = sqlite3_open(dir, &DB);
+        exit = sqlite3_open(this->dir, &DB);;
         exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &messageError);
         if (exit != SQLITE_OK) {
             cerr << "createTable function failed." << endl;
@@ -54,7 +52,7 @@ int DatabaseManager::executeSQL(const std::string& sql, std::function<void(sqlit
     sqlite3* DB;
     sqlite3_stmt* stmt;
 
-    int exit = sqlite3_open(dir, &DB);
+    int exit = sqlite3_open(this->dir, &DB);
     checkOpenDatabase(exit);
 
     exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);
@@ -82,11 +80,12 @@ int DatabaseManager::prepareSQLStatement(const std::string& sql, sqlite3_stmt*& 
     return SQLITE_OK;
 }
 
-void DatabaseManager::insertData(const std::string& sql, std::function<void(sqlite3_stmt*)> bindFunc) {
+
+void DatabaseManager::insertDataHelper(const std::string& sql, std::function<void(sqlite3_stmt*)> bindFunc) {
     sqlite3* DB;
     sqlite3_stmt* stmt;
 
-    int exit = sqlite3_open(dir, &DB);
+    int exit = sqlite3_open(this->dir, &DB);
     checkOpenDatabase(exit);
 
     exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);
@@ -107,7 +106,7 @@ void DatabaseManager::deleteData(int id, const std::string& sql) {
     sqlite3* DB;
     sqlite3_stmt* stmt;
 
-    int exit = sqlite3_open(dir, &DB);
+    int exit = sqlite3_open(this->dir, &DB);;
     checkOpenDatabase(exit);
 
     exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);
