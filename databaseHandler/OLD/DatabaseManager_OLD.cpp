@@ -1,4 +1,4 @@
-#include "DatabaseManager.h"
+#include "DatabaseManager_OLD.h"
 #include <iostream>
 #include <cstdio>
 #include <sqlite3.h>
@@ -7,17 +7,17 @@
 
 using namespace std;
 
-const char* DatabaseManager::dir = "../leaderboards.db";
+const char* DatabaseManager_OLD::dir = "../leaderboards.db";
 
-DatabaseManager::DatabaseManager() {
+DatabaseManager_OLD::DatabaseManager_OLD() {
     sqlite3_open(dir, &DB);
 }
 
-DatabaseManager::~DatabaseManager() {
+DatabaseManager_OLD::~DatabaseManager_OLD() {
     sqlite3_close(DB);
 }
 
-int DatabaseManager::createDB() {
+int DatabaseManager_OLD::createDB() {
     sqlite3* DB;
     int exit = 0;
 
@@ -28,7 +28,7 @@ int DatabaseManager::createDB() {
     return 0;
 }
 
-int DatabaseManager::createTable() {
+int DatabaseManager_OLD::createTable() {
     sqlite3 *DB;
     char *messageError;
 
@@ -57,7 +57,7 @@ int DatabaseManager::createTable() {
     return 0;
 }
 
-void DatabaseManager::insertData(int level, int score, const std::string& player) {
+void DatabaseManager_OLD::insertData(int level, int score, const std::string& player) {
     sqlite3* DB;
     sqlite3_stmt* stmt;
 
@@ -96,7 +96,7 @@ void DatabaseManager::insertData(int level, int score, const std::string& player
     sqlite3_close(DB);
 }
 
-int DatabaseManager::callback(void* NotUsed, int argc, char** argv, char** azColName) {
+int DatabaseManager_OLD::callback(void* NotUsed, int argc, char** argv, char** azColName) {
     for (int i = 0; i < argc; i++) {
         std::cout << azColName[i] << ": " << (argv[i] ? argv[i] : "NULL") << "\n";
     }
@@ -104,7 +104,7 @@ int DatabaseManager::callback(void* NotUsed, int argc, char** argv, char** azCol
     return 0;
 }
 
-void DatabaseManager::outputData() {
+void DatabaseManager_OLD::outputData() {
     sqlite3* DB;
     char* messageError;
     std::string sql = "SELECT * FROM LEADERBOARD;";
@@ -126,7 +126,7 @@ void DatabaseManager::outputData() {
     sqlite3_close(DB);
 }
 
-void DatabaseManager::deleteData(int id) {
+void DatabaseManager_OLD::deleteData(int id) {
     sqlite3* DB;
     sqlite3_stmt* stmt;
 
@@ -156,7 +156,7 @@ void DatabaseManager::deleteData(int id) {
     sqlite3_close(DB);
 }
 
-int DatabaseManager::getHiscore(const std::string& player, int level) {
+int DatabaseManager_OLD::getHiscore(const std::string& player, int level) {
     sqlite3* DB;
     sqlite3_stmt* stmt;
     int hiscore = 0;
@@ -190,7 +190,7 @@ int DatabaseManager::getHiscore(const std::string& player, int level) {
     return hiscore;
 }
 
-void DatabaseManager::genLB(int level) {
+void DatabaseManager_OLD::genLB(int level) {
     sqlite3* DB;
     sqlite3_stmt* stmt;
 

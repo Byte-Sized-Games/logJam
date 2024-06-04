@@ -3,11 +3,13 @@ project(logJAM)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(cpp-things main.cpp
+add_executable(databaseHandler main.cpp
         sqlite3.h
         sqlite3.c
         DatabaseManager.cpp
         DatabaseManager.h
+        Leaderboards.cpp
+        Leaderboards.h
 )
 
 find_package(SQLite3 REQUIRED)
