@@ -4,8 +4,15 @@
 
 #include "Leaderboards.h"
 
-Leaderboards::Leaderboards(){
+void Leaderboards::setLeaderboardsDir() {
+    DatabaseManager::setDir("../leaderboards.db");
+}
 
+Leaderboards::Leaderboards() {
+    setLeaderboardsDir();
+    sqlite3_open(dir, &DB);
+    DatabaseManager::createDB();
+    // Other initialization...
 }
 
 Leaderboards::~Leaderboards() {
@@ -136,4 +143,3 @@ void Leaderboards::insertData(int level, int score, const std::string& player) {
     };
     insertDataHelper(sql, bindFunc);
 }
-

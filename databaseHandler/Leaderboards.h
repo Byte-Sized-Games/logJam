@@ -20,6 +20,7 @@ public:
     int getHiscore(const std::string& player, int level);
     void genLB(int level);
     void insertData(int level, int score, const std::string& player); //oooo overloading (so i can use the same insertData(...) )
+    void setLeaderboardsDir();
 };
 
 #endif //LOGJAM_LEADERBOARDS_H

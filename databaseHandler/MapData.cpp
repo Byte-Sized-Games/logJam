@@ -4,8 +4,15 @@
 
 #include "MapData.h"
 
+void MapData::setMapDataDir() {
+    DatabaseManager::setDir("../map-data.db");
+}
+
 MapData::MapData() {
-    // Other initialization code...
+    setMapDataDir();
+    sqlite3_open(dir, &DB);
+    DatabaseManager::createDB();
+    currentLevelId = getMinId(); // Initialize currentLevelId to the lowest ID
 }
 
 MapData::~MapData() {
@@ -18,6 +25,7 @@ int MapData::createTable() {
 
 std::string MapData::getCreateTableSQL() {
     return "CREATE TABLE IF NOT EXISTS MapData("
+           "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
            "SongTitle TEXT NOT NULL,"
            "SongArtist TEXT NOT NULL,"
            "Length INTEGER NOT NULL,"
@@ -68,4 +76,95 @@ int MapData::callback(void* NotUsed, int argc, char** argv, char** azColName) {
 void MapData::deleteData(int id) {
     std::string deleteSql = "DELETE FROM MapData WHERE ID = ?;";
     DatabaseManager::deleteData(id, deleteSql);
+}
+
+void MapData::nextLv() {
+    currentLevelId++;
+    if (currentLevelId > getMaxId()) {
+        currentLevelId = getMinId();
+    }
+    displayLevel();
+}
+
+void MapData::prevLv() {
+    currentLevelId--;
+    if (currentLevelId < getMinId()) {
+        currentLevelId = getMaxId();
+    }
+    displayLevel();
+}
+
+void MapData::displayLevel() {
+    std::string sql = "SELECT * FROM MapData WHERE ID = ?;";
+    sqlite3_stmt* stmt;
+    bool idExists = false;
+
+    // Try IDs from currentLevelId to max ID
+    for (int id = currentLevelId; id <= getMaxId() && !idExists; id++) {
+        idExists = tryDisplayLevel(id, sql, stmt);
+    }
+
+    // If no valid ID found, try IDs from min ID to currentLevelId
+    for (int id = getMinId(); id < currentLevelId && !idExists; id++) {
+        idExists = tryDisplayLevel(id, sql, stmt);
+    }
+
+    if (!idExists) {
+        std::cout << "No valid level ID found\n";
+    }
+}
+
+bool MapData::tryDisplayLevel(int id, const std::string& sql, sqlite3_stmt*& stmt) {
+    if (sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0) != SQLITE_OK) {
+        std::cout << "Failed to prepare statement\n";
+        return false;
+    }
+    sqlite3_bind_int(stmt, 1, id);
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        int colCount = sqlite3_column_count(stmt);
+        char** argv = new char*[colCount];
+        char** azColName = new char*[colCount];
+        for (int i = 0; i < colCount; i++) {
+            argv[i] = (char*)sqlite3_column_text(stmt, i);
+            azColName[i] = (char*)sqlite3_column_name(stmt, i);
+            if (argv[i] == nullptr || azColName[i] == nullptr) {
+                std::cout << "Failed to get column text or name\n";
+                delete[] argv;
+                delete[] azColName;
+                sqlite3_finalize(stmt);
+                return false;
+            }
+        }
+        callback(nullptr, colCount, argv, azColName);
+        delete[] argv;
+        delete[] azColName;
+        currentLevelId = id;  // Update currentLevelId to the valid ID
+        sqlite3_finalize(stmt);
+        return true;
+    }
+    sqlite3_finalize(stmt);
+    return false;
+}
+int MapData::getMaxId() {
+    std::string sql = "SELECT MAX(ID) FROM MapData;";
+    sqlite3_stmt* stmt;
+    prepareSQLStatement(sql, stmt);
+    int maxId = 0;
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        maxId = sqlite3_column_int(stmt, 0);
+    }
+    sqlite3_finalize(stmt);
+    return maxId;
+}
+
+int MapData::getMinId() {
+    std::string sql = "SELECT MIN(ID) FROM MapData;";
+    sqlite3_stmt* stmt;
+    prepareSQLStatement(sql, stmt);
+    int minId = 0;
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        minId = sqlite3_column_int(stmt, 0);
+    }
+    sqlite3_finalize(stmt);
+    return minId;
 }

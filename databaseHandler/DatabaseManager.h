@@ -27,6 +27,8 @@ public:
     //these two generic things check if things are working and display an error message if not
     void checkOpenDatabase(int exit);
     void checkPrepareStatement(int exit);
+    static void setDir(const char* directory);
+
 
 protected:
     //im doing encapsulation ooh aah

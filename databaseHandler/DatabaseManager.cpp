@@ -23,6 +23,10 @@ int DatabaseManager::createDB() {
     return 0;
 }
 
+void DatabaseManager::setDir(const char* directory) {
+    dir = directory;
+}
+
 int DatabaseManager::createTable() {
     sqlite3 *DB;
     char *messageError;
@@ -37,7 +41,6 @@ int DatabaseManager::createTable() {
             cerr << "createTable function failed." << endl;
             sqlite3_free(messageError);
         } else
-            cout << "Table created/accessed successfully" << endl;
         sqlite3_close(DB);
     }
     catch (const exception &e) {

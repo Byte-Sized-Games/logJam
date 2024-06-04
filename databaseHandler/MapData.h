@@ -19,6 +19,14 @@ public:
     static int callback(void* NotUsed, int argc, char** argv, char** azColName);
     void outputData();
     void deleteData(int id);
+    void setMapDataDir();
+    void nextLv();
+    void prevLv();
+    void displayLevel();
+    int currentLevelId;
+    int getMaxId();
+    int getMinId();
+    bool tryDisplayLevel(int id, const std::string& sql, sqlite3_stmt*& stmt);
 };
 
 #endif //LOGJAM_MAPDATA_H
