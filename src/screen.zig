@@ -4,11 +4,15 @@
 
 const ui = @import("ui.zig");
 const entities = @import("entities.zig");
+const melodie = @import("melodie.zig");
 const raylib = @import("raylib");
+const std = @import("std");
+const ArrayList = std.ArrayList;
 
 pub const Level = struct {
     player: *entities.Player,
     map: Map,
+    beat: melodie.Beat,
 };
 
 pub const Map = struct {
@@ -33,4 +37,23 @@ pub const Map = struct {
     }
 };
 
-pub const Menu = struct {};
+pub const Menu = struct {
+    elements: ArrayList(ui.Element),
+
+    pub fn draw(self: Menu) void {
+        for (self.elements.items) |element| {
+            switch (element) {
+                .button => |btn| {
+                    btn.render();
+                },
+                .textBox => |txt| {
+                    txt.render();
+                },
+            }
+        }
+    }
+
+    pub fn deinit(self: *Menu) void {
+        self.elements.deinit();
+    }
+};

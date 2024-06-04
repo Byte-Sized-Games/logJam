@@ -6,6 +6,8 @@ const std = @import("std");
 const raylib = @import("raylib");
 const Player = @import("entities.zig").Player;
 const screen = @import("screen.zig");
+const ui = @import("ui.zig");
+const game = @import("game.zig");
 
 // Initialise Game Values
 
@@ -14,27 +16,29 @@ const screenHeight = 800;
 const screenWidth = 800;
 
 // Allocator
-const arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
 
 pub fn main() !void {
     defer arena.deinit();
+    const allocator = arena.allocator();
 
     // const level = try toml.decode(screen.Map, arena, levelConfig);
 
     // Initialise Window
     raylib.initAudioDevice();
     raylib.initWindow(screenWidth, screenHeight, "Logger");
+    raylib.setTargetFPS(60);
     defer raylib.closeWindow();
 
+    // Initialise Player
     var player = Player.init(4, 4, raylib.Texture2D.init("assets/miku.png"));
-    defer player.deinit();
 
-    raylib.setTargetFPS(60);
+    // Initialise Main Menu
+    const menu = try game.mainMenu(&allocator);
 
     while (!raylib.windowShouldClose()) {
         // Logic Loop
         player.listen();
-
         // Rendering Loop
         raylib.beginDrawing();
         defer raylib.endDrawing();
@@ -43,6 +47,7 @@ pub fn main() !void {
             raylib.drawText("Logger", 50, 40, 40, raylib.Color.white);
             // level.draw();
             player.render();
+            menu.draw();
         }
     }
 }
