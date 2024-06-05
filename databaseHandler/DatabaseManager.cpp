@@ -37,6 +37,7 @@ int DatabaseManager::createTable() {
     try {
         int exit = 0;
         std::cout << "pain and suffering 9\n";
+
         exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &messageError);
         if (exit != SQLITE_OK) {
             cerr << "createTable function failed." << endl;

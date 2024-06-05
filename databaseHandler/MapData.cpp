@@ -9,16 +9,10 @@ void MapData::setMapDataDir() {
 }
 
 MapData::MapData() {
-    std::cout << "Entering MapData constructor...\n";
-    std::cout << "Setting MapData directory...\n";
     setMapDataDir();
-    std::cout << "Opening database...\n";
     sqlite3_open(dir, &DB);
-    std::cout << "Creating database...\n";
     DatabaseManager::createDB();
-    std::cout << "Loading current value...\n";
     loadCurrentValue();
-    std::cout << "Exiting MapData constructor...\n";
 }
 
 MapData::~MapData() {
@@ -88,6 +82,7 @@ void MapData::deleteData(int id) {
 }
 
 void MapData::nextLv() {
+
     currentLevelId++;
     if (currentLevelId > getMaxId()) {
         currentLevelId = getMinId();
@@ -111,7 +106,7 @@ void MapData::prevLv() {
 }
 
 void MapData::prev10Lv() {
-    currentLevelId+=9;
+    currentLevelId-=9;
     nextLv();
 }
 
@@ -119,6 +114,10 @@ void MapData::displayLevel() {
     std::string sql = "SELECT * FROM MapData WHERE ID = ?;";
     sqlite3_stmt* stmt;
     bool idExists = false;
+
+    if (currentLevelId < getMinId() || currentLevelId > getMaxId()){
+        currentLevelId = getMinId();
+    }
 
     // Try IDs from currentLevelId to max ID
     for (int id = currentLevelId; id <= getMaxId() && !idExists; id++) {
@@ -167,6 +166,7 @@ bool MapData::tryDisplayLevel(int id, const std::string& sql, sqlite3_stmt*& stm
     return false;
 }
 int MapData::getMaxId() {
+    DatabaseManager::checkOpenDatabase(sqlite3_open(this->dir, &DB));
     std::string sql = "SELECT MAX(ID) FROM MapData;";
     sqlite3_stmt* stmt;
     prepareSQLStatement(sql, stmt);
@@ -179,7 +179,7 @@ int MapData::getMaxId() {
 }
 
 int MapData::getMinId() {
-    std::cout << "Entering getMinId method...\n";
+    DatabaseManager::checkOpenDatabase(sqlite3_open(this->dir, &DB));
     std::string sql = "SELECT MIN(ID) FROM MapData;";
     sqlite3_stmt* stmt;
     prepareSQLStatement(sql, stmt);
