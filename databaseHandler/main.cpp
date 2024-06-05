@@ -22,33 +22,15 @@ DONE -mapData get next x 10 or something
 int main() {
     // Create a MapData object
     MapData mapData;
-    // Test MapData methods
-    mapData.createTable();
+    // Test getCurrentLevel method
+    int currentLevel = mapData.getCurrentLevel();
+    std::cout << "Current level: " << currentLevel << std::endl;
 
-    // Insert a test record
-    mapData.insertData("Test Song", "Test Artist", 200, 120, 5, 1, "Test Source");
+    // Create a Leaderboards object
+    Leaderboards leaderboards;
 
-    mapData.outputData();
+    // Create a leaderboard for the current level
+    leaderboards.genLB(currentLevel);  // Pass currentLevel directly to genLB
 
-    // Display the current level
-    std::cout << "Displaying current level:\n";
-    mapData.displayLevel();
-
-    // Go to the next level and display it
-    std::cout << "Going to next level:\n";
-    mapData.nextLv();
-
-    // Go to the next 10 levels and display it
-    std::cout << "Going to next 10 levels:\n";
-    mapData.next10Lv();
-
-    // Go to the previous level and display it
-    std::cout << "Going to next 10 levels again:\n";
-    mapData.next10Lv();
-
-    // Go to the previous 10 levels and display it
-    std::cout << "Going to prev 10 levels:\n";
-    mapData.prev10Lv();
-
-    return 0;
+    // Rest of your code...
 }

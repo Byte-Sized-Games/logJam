@@ -22,6 +22,8 @@ public:
     void setMapDataDir();
     void nextLv();
     void prevLv();
+    int getCurrentId() const;
+    int getCurrentLevel();
     void displayLevel();
     int getMaxId();
     int getMinId();

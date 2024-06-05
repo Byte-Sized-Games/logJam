@@ -30,10 +30,7 @@ int DatabaseManager::createTable() {
     std::string sql = getCreateTableSQL();
     try {
         int exit = sqlite3_open(this->dir, &DB);  // Open the database
-        if (exit != SQLITE_OK) {
-            std::cerr << "Cannot open database: " << sqlite3_errmsg(DB) << std::endl;
-            return exit;
-        }
+        checkOpenDatabase(exit);
 
         exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &messageError);
         if (exit != SQLITE_OK) {

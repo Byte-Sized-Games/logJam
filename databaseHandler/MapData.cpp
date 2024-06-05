@@ -139,8 +139,7 @@ void MapData::displayLevel() {
     bool idExists = false;
 
     if (currentLevelId < getMinId() || currentLevelId > getMaxId()){
-        currentLevelId = getMinId();
-    }
+        currentLevelId = getMinId(); }
 
     // Try IDs from currentLevelId to max ID
     for (int id = currentLevelId; id <= getMaxId() && !idExists; id++) {
@@ -246,7 +245,7 @@ void MapData::loadCurrentValue() {
 }
 
 int MapData::displayLevelCallback(void* NotUsed, int argc, char** argv, char** azColName) {
-    for(int i = 0; i < argc; i++) {
+    for (int i = 0; i < argc; i++) {
         std::string columnName = azColName[i];
         if (columnName != "ID" && columnName != "Source" && columnName != "Level") {
             std::cout << azColName[i] << ": " << (argv[i] ? argv[i] : "NULL") << "\n";
@@ -254,4 +253,33 @@ int MapData::displayLevelCallback(void* NotUsed, int argc, char** argv, char** a
     }
     std::cout << "\n";
     return 0;
+}
+
+int MapData::getCurrentId() const {
+    return currentLevelId;
+}
+
+int MapData::getCurrentLevel() {
+    std::string sql = "SELECT Level FROM MapData WHERE ID = ?;";
+    sqlite3_stmt* stmt;
+    int level = -1;  // Initialize level to -1 to indicate an error if no level is found
+
+    int exit = sqlite3_open(this->dir, &DB);
+    if (exit != SQLITE_OK) {
+        std::cout << "Cannot open database: " << sqlite3_errmsg(DB) << std::endl;
+        return level;
+    }
+
+    if (sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, currentLevelId);
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            level = sqlite3_column_int(stmt, 0);
+        }
+        sqlite3_finalize(stmt);
+    } else {
+        std::cout << "Failed to prepare statement: " << sqlite3_errmsg(DB) << std::endl;
+    }
+
+    sqlite3_close(DB);
+    return level;
 }
