@@ -40,7 +40,21 @@ int DatabaseManager::createTable() {
         if (exit != SQLITE_OK) {
             cerr << "createTable function failed." << endl;
             sqlite3_free(messageError);
-        } else
+        }
+
+        sql = "CREATE TABLE IF NOT EXISTS CurrentValue (ID INTEGER PRIMARY KEY, Value INTEGER);";
+        sqlite3_stmt* stmt;
+        if (sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0) == SQLITE_OK) {
+            sqlite3_step(stmt);
+            sqlite3_finalize(stmt);
+        }
+
+        sql = "INSERT OR IGNORE INTO CurrentValue (ID, Value) VALUES (1, 0);";
+        if (sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0) == SQLITE_OK) {
+            sqlite3_step(stmt);
+            sqlite3_finalize(stmt);
+        }
+
         sqlite3_close(DB);
     }
     catch (const exception &e) {

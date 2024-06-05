@@ -23,10 +23,16 @@ public:
     void nextLv();
     void prevLv();
     void displayLevel();
-    int currentLevelId;
     int getMaxId();
     int getMinId();
     bool tryDisplayLevel(int id, const std::string& sql, sqlite3_stmt*& stmt);
+    void saveCurrentValue();
+    void loadCurrentValue();
+    void next10Lv();
+    void prev10Lv();
+
+private:
+    int currentLevelId;
 };
 
 #endif //LOGJAM_MAPDATA_H

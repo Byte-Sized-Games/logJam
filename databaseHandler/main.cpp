@@ -7,12 +7,12 @@ using namespace std;
 /*
  things i need to do
 
- -mapData display song
--mapData get song/next/previous
--mapData get next x 10 or something
+DONE -mapData display song
+DONE -mapData get song/next/previous
+DONE -mapData get next x 10 or something
 -Leaderboards, sort with respect to time, day, week, month
 -mapData get id, so id parameter can be fed into generateLB
- -mapData changesort
+ -mapData changesort    **** bonus
 
  -command line support
 
@@ -37,9 +37,17 @@ int main() {
     std::cout << "Going to next level:\n";
     mapData.nextLv();
 
+    // Go to the next 10 levels and display it
+    std::cout << "Going to next 10 levels:\n";
+    mapData.next10Lv();
+
     // Go to the previous level and display it
-    std::cout << "Going to previous level:\n";
-    mapData.prevLv();
+    std::cout << "Going to next 10 levels again:\n";
+    mapData.next10Lv();
+
+    // Go to the previous 10 levels and display it
+    std::cout << "Going to prev 10 levels:\n";
+    mapData.prev10Lv();
 
     return 0;
 }

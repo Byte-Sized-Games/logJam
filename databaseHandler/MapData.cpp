@@ -13,6 +13,7 @@ MapData::MapData() {
     sqlite3_open(dir, &DB);
     DatabaseManager::createDB();
     currentLevelId = getMinId(); // Initialize currentLevelId to the lowest ID
+    loadCurrentValue();
 }
 
 MapData::~MapData() {
@@ -84,6 +85,12 @@ void MapData::nextLv() {
         currentLevelId = getMinId();
     }
     displayLevel();
+    saveCurrentValue();
+}
+
+void MapData::next10Lv() {
+    currentLevelId+=9;
+    nextLv();
 }
 
 void MapData::prevLv() {
@@ -92,6 +99,12 @@ void MapData::prevLv() {
         currentLevelId = getMaxId();
     }
     displayLevel();
+    saveCurrentValue();
+}
+
+void MapData::prev10Lv() {
+    currentLevelId+=9;
+    nextLv();
 }
 
 void MapData::displayLevel() {
@@ -167,4 +180,33 @@ int MapData::getMinId() {
     }
     sqlite3_finalize(stmt);
     return minId;
+}
+
+void MapData::saveCurrentValue() {
+    std::string sql = "UPDATE CurrentValue SET Value = ? WHERE ID = 1;";
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, currentLevelId);
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            std::cout << "Failed to save current value: " << sqlite3_errmsg(DB) << std::endl;
+        }
+        sqlite3_finalize(stmt);
+    } else {
+        std::cout << "Failed to prepare statement: " << sqlite3_errmsg(DB) << std::endl;
+    }
+}
+
+void MapData::loadCurrentValue() {
+    std::string sql = "SELECT Value FROM CurrentValue WHERE ID = 1;";
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0) == SQLITE_OK) {
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            currentLevelId = sqlite3_column_int(stmt, 0);
+        } else {
+            std::cout << "Failed to load current value: " << sqlite3_errmsg(DB) << std::endl;
+        }
+        sqlite3_finalize(stmt);
+    } else {
+        std::cout << "Failed to prepare statement: " << sqlite3_errmsg(DB) << std::endl;
+    }
 }
