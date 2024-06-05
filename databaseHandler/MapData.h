@@ -14,7 +14,7 @@ public:
     int createTable() override;
     std::string getCreateTableSQL() override;
     void insertData(const std::string& songTitle, const std::string& songArtist,
-                    int length, int bpm, int difficulty, const std::string& source);
+                    int length, int bpm, int difficulty, int level, const std::string& source);
     //i know its a gross amount of parameters, but it doesnt make sense any other way
     static int callback(void* NotUsed, int argc, char** argv, char** azColName);
     void outputData();

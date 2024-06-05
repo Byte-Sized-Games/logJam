@@ -13,13 +13,14 @@ DatabaseManager::~DatabaseManager() {
 }
 
 int DatabaseManager::createDB() {
+    cout << "pain and suffering 1\n";
     sqlite3* DB;
     int exit = 0;
-
+    cout << "pain and suffering 2\n";
     sqlite3_open(dir, &DB);
-
+    cout << "pain and suffering 3\n";
     sqlite3_close(DB);
-
+    cout << "pain and suffering 4\n";
     return 0;
 }
 
@@ -30,12 +31,12 @@ void DatabaseManager::setDir(const char* directory) {
 int DatabaseManager::createTable() {
     sqlite3 *DB;
     char *messageError;
-
+    std::cout << "pain and suffering 7\n";
     std::string sql = getCreateTableSQL();
-
+    std::cout << "pain and suffering 8\n";
     try {
         int exit = 0;
-        exit = sqlite3_open(this->dir, &DB);;
+        std::cout << "pain and suffering 9\n";
         exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &messageError);
         if (exit != SQLITE_OK) {
             cerr << "createTable function failed." << endl;
@@ -54,7 +55,6 @@ int DatabaseManager::createTable() {
             sqlite3_step(stmt);
             sqlite3_finalize(stmt);
         }
-
         sqlite3_close(DB);
     }
     catch (const exception &e) {
@@ -63,7 +63,6 @@ int DatabaseManager::createTable() {
 
     return 0;
 }
-
 
 int DatabaseManager::executeSQL(const std::string& sql, std::function<void(sqlite3_stmt*)> bindFunc) {
     sqlite3* DB;

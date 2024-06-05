@@ -9,11 +9,16 @@ void MapData::setMapDataDir() {
 }
 
 MapData::MapData() {
+    std::cout << "Entering MapData constructor...\n";
+    std::cout << "Setting MapData directory...\n";
     setMapDataDir();
+    std::cout << "Opening database...\n";
     sqlite3_open(dir, &DB);
+    std::cout << "Creating database...\n";
     DatabaseManager::createDB();
-    currentLevelId = getMinId(); // Initialize currentLevelId to the lowest ID
+    std::cout << "Loading current value...\n";
     loadCurrentValue();
+    std::cout << "Exiting MapData constructor...\n";
 }
 
 MapData::~MapData() {
@@ -21,29 +26,32 @@ MapData::~MapData() {
 }
 
 int MapData::createTable() {
+    std::cout << "pain and suffering 6\n";
     return DatabaseManager::createTable();
 }
 
 std::string MapData::getCreateTableSQL() {
     return "CREATE TABLE IF NOT EXISTS MapData("
            "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-           "SongTitle TEXT NOT NULL,"
-           "SongArtist TEXT NOT NULL,"
+           "Title TEXT NOT NULL,"
+           "Artist TEXT NOT NULL,"
            "Length INTEGER NOT NULL,"
            "BPM INTEGER NOT NULL,"
            "Difficulty INTEGER NOT NULL,"
+           "Level INTEGER NOT NULL,"
            "Source TEXT NOT NULL);";
 }
 
-void MapData::insertData(const std::string& songTitle, const std::string& songArtist, int length, int bpm, int difficulty, const std::string& source) {
-    std::string sql = "INSERT INTO MapData(SongTitle, SongArtist, Length, BPM, Difficulty, Source) VALUES (?, ?, ?, ?, ?, ?);";
-    insertDataHelper(sql, [songTitle, songArtist, length, bpm, difficulty, source](sqlite3_stmt* stmt) {
+void MapData::insertData(const std::string& songTitle, const std::string& songArtist, int length, int bpm, int difficulty, int level, const std::string& source) {
+    std::string sql = "INSERT INTO MapData(SongTitle, SongArtist, Length, BPM, Difficulty, Level, Source) VALUES (?, ?, ?, ?, ?, ?, ?);"; // Updated SQL statement
+    insertDataHelper(sql, [songTitle, songArtist, length, bpm, difficulty, level, source](sqlite3_stmt* stmt) {
         sqlite3_bind_text(stmt, 1, songTitle.c_str(), -1, SQLITE_STATIC);
         sqlite3_bind_text(stmt, 2, songArtist.c_str(), -1, SQLITE_STATIC);
         sqlite3_bind_int(stmt, 3, length);
         sqlite3_bind_int(stmt, 4, bpm);
         sqlite3_bind_int(stmt, 5, difficulty);
-        sqlite3_bind_text(stmt, 6, source.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_int(stmt, 6, level); // Bind level
+        sqlite3_bind_text(stmt, 7, source.c_str(), -1, SQLITE_STATIC);
     });
 }
 
@@ -171,6 +179,7 @@ int MapData::getMaxId() {
 }
 
 int MapData::getMinId() {
+    std::cout << "Entering getMinId method...\n";
     std::string sql = "SELECT MIN(ID) FROM MapData;";
     sqlite3_stmt* stmt;
     prepareSQLStatement(sql, stmt);
@@ -179,6 +188,7 @@ int MapData::getMinId() {
         minId = sqlite3_column_int(stmt, 0);
     }
     sqlite3_finalize(stmt);
+    std::cout << "Exiting getMinId method...\n";
     return minId;
 }
 

@@ -22,10 +22,14 @@ DONE -mapData get next x 10 or something
 int main() {
     // Create a MapData object
     MapData mapData;
-
+    std::cout << "im alive\n";
     // Test MapData methods
     mapData.createDB();
+    std::cout << "pain and suffering 5\n";
     mapData.createTable();
+
+    // Insert a test record
+    mapData.insertData("Test Song", "Test Artist", 200, 120, 5, 1, "Test Source");
 
     mapData.outputData();
 
