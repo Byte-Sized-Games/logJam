@@ -20,9 +20,32 @@ MapData::~MapData() {
 }
 
 int MapData::createTable() {
-    std::cout << "pain and suffering 6\n";
+    int exit = DatabaseManager::createTable();
+
+    std::string sql = "CREATE TABLE IF NOT EXISTS CurrentValue (ID INTEGER PRIMARY KEY, Value INTEGER);";
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0) == SQLITE_OK) {
+        sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+    } else {
+        return -1;
+    }
+
+    sql = "INSERT OR IGNORE INTO CurrentValue (ID, Value) VALUES (1, 0);";
+    if (sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0) == SQLITE_OK) {
+        sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+    } else {
+        return -1;
+    }
+
+    return exit;
+}
+/*
+int MapData::createTable() {
     return DatabaseManager::createTable();
 }
+ */
 
 std::string MapData::getCreateTableSQL() {
     return "CREATE TABLE IF NOT EXISTS MapData("
@@ -37,7 +60,7 @@ std::string MapData::getCreateTableSQL() {
 }
 
 void MapData::insertData(const std::string& songTitle, const std::string& songArtist, int length, int bpm, int difficulty, int level, const std::string& source) {
-    std::string sql = "INSERT INTO MapData(SongTitle, SongArtist, Length, BPM, Difficulty, Level, Source) VALUES (?, ?, ?, ?, ?, ?, ?);"; // Updated SQL statement
+    std::string sql = "INSERT INTO MapData(Title, Artist, Length, BPM, Difficulty, Level, Source) VALUES (?, ?, ?, ?, ?, ?, ?);"; // Updated SQL statement
     insertDataHelper(sql, [songTitle, songArtist, length, bpm, difficulty, level, source](sqlite3_stmt* stmt) {
         sqlite3_bind_text(stmt, 1, songTitle.c_str(), -1, SQLITE_STATIC);
         sqlite3_bind_text(stmt, 2, songArtist.c_str(), -1, SQLITE_STATIC);
@@ -107,7 +130,7 @@ void MapData::prevLv() {
 
 void MapData::prev10Lv() {
     currentLevelId-=9;
-    nextLv();
+    prevLv();
 }
 
 void MapData::displayLevel() {
@@ -155,7 +178,7 @@ bool MapData::tryDisplayLevel(int id, const std::string& sql, sqlite3_stmt*& stm
                 return false;
             }
         }
-        callback(nullptr, colCount, argv, azColName);
+        displayLevelCallback(nullptr, colCount, argv, azColName); // Use displayLevelCallback here
         delete[] argv;
         delete[] azColName;
         currentLevelId = id;  // Update currentLevelId to the valid ID
@@ -165,6 +188,7 @@ bool MapData::tryDisplayLevel(int id, const std::string& sql, sqlite3_stmt*& stm
     sqlite3_finalize(stmt);
     return false;
 }
+
 int MapData::getMaxId() {
     DatabaseManager::checkOpenDatabase(sqlite3_open(this->dir, &DB));
     std::string sql = "SELECT MAX(ID) FROM MapData;";
@@ -188,7 +212,6 @@ int MapData::getMinId() {
         minId = sqlite3_column_int(stmt, 0);
     }
     sqlite3_finalize(stmt);
-    std::cout << "Exiting getMinId method...\n";
     return minId;
 }
 
@@ -209,14 +232,26 @@ void MapData::saveCurrentValue() {
 void MapData::loadCurrentValue() {
     std::string sql = "SELECT Value FROM CurrentValue WHERE ID = 1;";
     sqlite3_stmt* stmt;
+    int exit = sqlite3_open(this->dir, &DB);
+    if (exit != SQLITE_OK) {
+        return;
+    }
     if (sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0) == SQLITE_OK) {
         if (sqlite3_step(stmt) == SQLITE_ROW) {
             currentLevelId = sqlite3_column_int(stmt, 0);
-        } else {
-            std::cout << "Failed to load current value: " << sqlite3_errmsg(DB) << std::endl;
         }
         sqlite3_finalize(stmt);
-    } else {
-        std::cout << "Failed to prepare statement: " << sqlite3_errmsg(DB) << std::endl;
     }
+    sqlite3_close(DB);
+}
+
+int MapData::displayLevelCallback(void* NotUsed, int argc, char** argv, char** azColName) {
+    for(int i = 0; i < argc; i++) {
+        std::string columnName = azColName[i];
+        if (columnName != "ID" && columnName != "Source" && columnName != "Level") {
+            std::cout << azColName[i] << ": " << (argv[i] ? argv[i] : "NULL") << "\n";
+        }
+    }
+    std::cout << "\n";
+    return 0;
 }

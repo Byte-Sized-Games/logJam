@@ -30,6 +30,7 @@ public:
     void loadCurrentValue();
     void next10Lv();
     void prev10Lv();
+    int displayLevelCallback(void *NotUsed, int argc, char **argv, char **azColName);
 
 private:
     int currentLevelId;

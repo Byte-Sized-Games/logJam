@@ -13,14 +13,10 @@ DatabaseManager::~DatabaseManager() {
 }
 
 int DatabaseManager::createDB() {
-    cout << "pain and suffering 1\n";
     sqlite3* DB;
     int exit = 0;
-    cout << "pain and suffering 2\n";
     sqlite3_open(dir, &DB);
-    cout << "pain and suffering 3\n";
     sqlite3_close(DB);
-    cout << "pain and suffering 4\n";
     return 0;
 }
 
@@ -31,16 +27,13 @@ void DatabaseManager::setDir(const char* directory) {
 int DatabaseManager::createTable() {
     sqlite3 *DB;
     char *messageError;
-    std::cout << "pain and suffering 7\n";
     std::string sql = getCreateTableSQL();
-    std::cout << "pain and suffering 8\n";
     try {
         int exit = sqlite3_open(this->dir, &DB);  // Open the database
         if (exit != SQLITE_OK) {
             std::cerr << "Cannot open database: " << sqlite3_errmsg(DB) << std::endl;
             return exit;
         }
-        std::cout << "pain and suffering 9\n";
 
         exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &messageError);
         if (exit != SQLITE_OK) {
@@ -54,7 +47,6 @@ int DatabaseManager::createTable() {
         checkPrepareStatement(exit);
         sqlite3_step(stmt);
         sqlite3_finalize(stmt);
-
         sql = "INSERT OR IGNORE INTO CurrentValue (ID, Value) VALUES (1, 0);";
         exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);
         checkPrepareStatement(exit);
@@ -66,7 +58,6 @@ int DatabaseManager::createTable() {
     catch (const exception &e) {
         cerr << e.what();
     }
-
     return 0;
 }
 
