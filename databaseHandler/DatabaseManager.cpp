@@ -35,27 +35,32 @@ int DatabaseManager::createTable() {
     std::string sql = getCreateTableSQL();
     std::cout << "pain and suffering 8\n";
     try {
-        int exit = 0;
+        int exit = sqlite3_open(this->dir, &DB);  // Open the database
+        if (exit != SQLITE_OK) {
+            std::cerr << "Cannot open database: " << sqlite3_errmsg(DB) << std::endl;
+            return exit;
+        }
         std::cout << "pain and suffering 9\n";
 
         exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &messageError);
         if (exit != SQLITE_OK) {
-            cerr << "createTable function failed." << endl;
+            std::cerr << "createTable function failed." << std::endl;
             sqlite3_free(messageError);
         }
 
         sql = "CREATE TABLE IF NOT EXISTS CurrentValue (ID INTEGER PRIMARY KEY, Value INTEGER);";
         sqlite3_stmt* stmt;
-        if (sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0) == SQLITE_OK) {
-            sqlite3_step(stmt);
-            sqlite3_finalize(stmt);
-        }
+        exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);
+        checkPrepareStatement(exit);
+        sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
 
         sql = "INSERT OR IGNORE INTO CurrentValue (ID, Value) VALUES (1, 0);";
-        if (sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0) == SQLITE_OK) {
-            sqlite3_step(stmt);
-            sqlite3_finalize(stmt);
-        }
+        exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);
+        checkPrepareStatement(exit);
+        sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+
         sqlite3_close(DB);
     }
     catch (const exception &e) {
