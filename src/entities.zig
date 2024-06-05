@@ -1,17 +1,31 @@
 const raylib = @import("raylib");
+const melodie = @import("melodie.zig");
+
+pub const PlayerResult = enum {
+    Safe,
+    Dead,
+    Won,
+};
 
 pub const Player = struct {
     x: i32,
     y: i32,
     texture: raylib.Texture2D,
+    rect: raylib.Rectangle,
 
     pub fn render(self: Player) void {
-        const posX = 100 * self.x + 50;
-        const posY = 100 * self.y + 50;
-        raylib.drawTexture(self.texture, posX, posY, raylib.Color.white);
+        const posX: f32 = @floatFromInt(self.x);
+        const posY: f32 = @floatFromInt(self.y);
+        self.texture.drawPro(
+            self.rect,
+            raylib.Rectangle.init(0, 0, 100, 100),
+            raylib.Vector2.init(posX * 100, posY * 100),
+            0.0,
+            raylib.Color.white,
+        );
     }
 
-    pub fn listen(self: *Player) void {
+    pub fn listen(self: *Player, beat: *melodie.Beat) f32 {
         var moveSpeed: i32 = 1;
 
         if (raylib.isKeyDown(raylib.KeyboardKey.key_space)) {
@@ -19,18 +33,34 @@ pub const Player = struct {
         }
 
         switch (raylib.getKeyPressed()) {
-            raylib.KeyboardKey.key_w, raylib.KeyboardKey.key_up => self.y -= moveSpeed,
-            raylib.KeyboardKey.key_s, raylib.KeyboardKey.key_down => self.y += moveSpeed,
-            raylib.KeyboardKey.key_a, raylib.KeyboardKey.key_left => self.x -= moveSpeed,
-            raylib.KeyboardKey.key_d, raylib.KeyboardKey.key_right => self.x += moveSpeed,
+            raylib.KeyboardKey.key_w, raylib.KeyboardKey.key_up => {
+                self.y += moveSpeed;
+                return beat.onBeat();
+            },
+            raylib.KeyboardKey.key_s, raylib.KeyboardKey.key_down => {
+                self.y -= moveSpeed;
+                return beat.onBeat();
+            },
+            raylib.KeyboardKey.key_a, raylib.KeyboardKey.key_left => {
+                self.x += moveSpeed;
+                return beat.onBeat();
+            },
+            raylib.KeyboardKey.key_d, raylib.KeyboardKey.key_right => {
+                self.x -= moveSpeed;
+                return beat.onBeat();
+            },
             else => {},
         }
+        return 0.0;
     }
 
     pub fn init(x: i32, y: i32, texture: raylib.Texture2D) Player {
+        const textureHeight: f32 = @floatFromInt(texture.height);
+        const textureWidth: f32 = @floatFromInt(texture.width);
         return Player{
             .x = x,
             .y = y,
+            .rect = raylib.Rectangle.init(64, 64, textureWidth / 5, textureHeight / 5),
             .texture = texture,
         };
     }
