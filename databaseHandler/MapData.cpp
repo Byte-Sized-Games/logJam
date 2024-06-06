@@ -59,17 +59,23 @@ std::string MapData::getCreateTableSQL() {
            "Source TEXT NOT NULL);";
 }
 
-void MapData::insertData(const std::string& songTitle, const std::string& songArtist, int length, int bpm, int difficulty, int level, const std::string& source) {
-    std::string sql = "INSERT INTO MapData(Title, Artist, Length, BPM, Difficulty, Level, Source) VALUES (?, ?, ?, ?, ?, ?, ?);"; // Updated SQL statement
-    insertDataHelper(sql, [songTitle, songArtist, length, bpm, difficulty, level, source](sqlite3_stmt* stmt) {
-        sqlite3_bind_text(stmt, 1, songTitle.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_text(stmt, 2, songArtist.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_int(stmt, 3, length);
-        sqlite3_bind_int(stmt, 4, bpm);
-        sqlite3_bind_int(stmt, 5, difficulty);
-        sqlite3_bind_int(stmt, 6, level); // Bind level
-        sqlite3_bind_text(stmt, 7, source.c_str(), -1, SQLITE_STATIC);
-    });
+void MapData::insertData(const std::string& songTitle, const std::string& songArtist,
+                         int length, int bpm, int difficulty, int level, const std::string& source) {
+    // Check for duplicates before inserting a new song
+    if (!isDuplicate(level)) {
+        std::string sql = "INSERT INTO MapData(Title, Artist, Length, BPM, Difficulty, Level, Source) VALUES (?, ?, ?, ?, ?, ?, ?);"; // Updated SQL statement
+        insertDataHelper(sql, [songTitle, songArtist, length, bpm, difficulty, level, source](sqlite3_stmt* stmt) {
+            sqlite3_bind_text(stmt, 1, songTitle.c_str(), -1, SQLITE_STATIC);
+            sqlite3_bind_text(stmt, 2, songArtist.c_str(), -1, SQLITE_STATIC);
+            sqlite3_bind_int(stmt, 3, length);
+            sqlite3_bind_int(stmt, 4, bpm);
+            sqlite3_bind_int(stmt, 5, difficulty);
+            sqlite3_bind_int(stmt, 6, level); // Bind level
+            sqlite3_bind_text(stmt, 7, source.c_str(), -1, SQLITE_STATIC);
+        });
+    } else {
+        std::cout << "Level already exists" << std::endl;
+    }
 }
 
 void MapData::outputData() {
@@ -282,4 +288,27 @@ int MapData::getCurrentLevel() {
 
     sqlite3_close(DB);
     return level;
+}
+
+bool MapData::isDuplicate(int level) {
+    sqlite3* DB;
+    sqlite3_stmt* stmt;
+    int exit = sqlite3_open(this->dir, &DB);
+    checkOpenDatabase(exit);
+
+    std::string sql = "SELECT * FROM MapData WHERE Level = ?;";
+    exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);
+    checkPrepareStatement(exit);
+
+    sqlite3_bind_int(stmt, 1, level);
+
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        sqlite3_finalize(stmt);
+        sqlite3_close(DB);
+        return true;  // A duplicate was found
+    }
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(DB);
+    return false;  // No duplicate was found
 }

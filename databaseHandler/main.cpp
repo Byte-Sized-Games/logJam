@@ -11,7 +11,7 @@ DONE -mapData display song
 DONE -mapData get song/next/previous
 DONE -mapData get next x 10 or something
 -Leaderboards, sort with respect to time, day, week, month
--mapData get id, so id parameter can be fed into generateLB
+DONE -mapData get id, so id parameter can be fed into generateLB
  -mapData changesort    **** bonus
 
  -command line support
@@ -22,15 +22,23 @@ DONE -mapData get next x 10 or something
 int main() {
     // Create a MapData object
     MapData mapData;
-    // Test getCurrentLevel method
+
+    mapData.prevLv();
+
+    // Display the current song
+    mapData.outputData();
+
+    // Store the current level in a variable
     int currentLevel = mapData.getCurrentLevel();
+
+
+
+    // Now you can use currentLevel without causing an error
     std::cout << "Current level: " << currentLevel << std::endl;
 
     // Create a Leaderboards object
     Leaderboards leaderboards;
 
-    // Create a leaderboard for the current level
-    leaderboards.genLB(currentLevel);  // Pass currentLevel directly to genLB
-
-    // Rest of your code...
+    // Create a leaderboard for a different level
+    leaderboards.genLB(currentLevel);  // Pass the current level ID to genLB
 }

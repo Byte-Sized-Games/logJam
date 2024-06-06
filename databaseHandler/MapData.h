@@ -27,6 +27,7 @@ public:
     void displayLevel();
     int getMaxId();
     int getMinId();
+    bool isDuplicate(int level);
     bool tryDisplayLevel(int id, const std::string& sql, sqlite3_stmt*& stmt);
     void saveCurrentValue();
     void loadCurrentValue();
