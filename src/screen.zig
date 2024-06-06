@@ -41,7 +41,7 @@ pub const Level = struct {
 
         // Render Score
 
-        raylib.drawText(raylib.textFormat("Score: %.1f", .{self.score}), 50, 50, 35, raylib.Color.white);
+        raylib.drawText(raylib.textFormat("Score: %.1f", .{self.score}), 550, 50, 35, raylib.Color.white);
     }
 };
 
@@ -52,12 +52,10 @@ pub const Map = struct {
     pub fn draw(self: *Map, tileSet: raylib.Texture2D) void {
         var x: f32 = 0;
         var y: f32 = 0;
-        const textureHeight: f32 = @floatFromInt(tileSet.height);
-        const textureWidth: f32 = @floatFromInt(tileSet.width);
         for (self.tiles) |column| {
             for (column) |tile| {
                 tileSet.drawPro(
-                    raylib.Rectangle.init(0, 192, textureWidth / 24, textureHeight / 24),
+                    raylib.Rectangle.init(0, 192, 32, 32),
                     raylib.Rectangle.init(0, 0, 100, 100),
                     raylib.Vector2.init(x, y),
                     0,
@@ -65,28 +63,28 @@ pub const Map = struct {
                 );
                 switch (tile) {
                     entities.Tile.start => tileSet.drawPro(
-                        raylib.Rectangle.init(256, 512, textureWidth / 24, textureHeight / 24),
+                        raylib.Rectangle.init(256, 512, 32, 32),
                         raylib.Rectangle.init(0, 0, 100, 100),
                         raylib.Vector2.init(x, y),
                         0,
                         raylib.Color.white,
                     ),
                     entities.Tile.log => tileSet.drawPro(
-                        raylib.Rectangle.init(64, 192, textureWidth / 24, textureHeight / 24),
+                        raylib.Rectangle.init(64, 192, 32, 32),
                         raylib.Rectangle.init(0, 0, 100, 100),
                         raylib.Vector2.init(x, y),
                         0,
                         raylib.Color.white,
                     ),
                     entities.Tile.water => tileSet.drawPro(
-                        raylib.Rectangle.init(0, 192, textureWidth / 24, textureHeight / 24),
+                        raylib.Rectangle.init(0, 96, 32, 32),
                         raylib.Rectangle.init(0, 0, 100, 100),
                         raylib.Vector2.init(x, y),
                         0,
                         raylib.Color.white,
                     ),
                     entities.Tile.end => tileSet.drawPro(
-                        raylib.Rectangle.init(224, 512, textureWidth / 24, textureHeight / 24),
+                        raylib.Rectangle.init(224, 512, 32, 32),
                         raylib.Rectangle.init(0, 0, 100, 100),
                         raylib.Vector2.init(x, y),
                         0,

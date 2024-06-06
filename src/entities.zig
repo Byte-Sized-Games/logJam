@@ -16,11 +16,10 @@ pub const Player = struct {
     pub fn render(self: Player) void {
         const posX: f32 = @floatFromInt(self.x);
         const posY: f32 = @floatFromInt(self.y);
-        self.texture.drawPro(
-            self.rect,
-            raylib.Rectangle.init(0, 0, 100, 100),
+        self.texture.drawEx(
             raylib.Vector2.init(posX * 100, posY * 100),
-            0.0,
+            0,
+            3.125,
             raylib.Color.white,
         );
     }
@@ -34,19 +33,19 @@ pub const Player = struct {
 
         switch (raylib.getKeyPressed()) {
             raylib.KeyboardKey.key_w, raylib.KeyboardKey.key_up => {
-                self.y += moveSpeed;
-                return beat.onBeat();
-            },
-            raylib.KeyboardKey.key_s, raylib.KeyboardKey.key_down => {
                 self.y -= moveSpeed;
                 return beat.onBeat();
             },
+            raylib.KeyboardKey.key_s, raylib.KeyboardKey.key_down => {
+                self.y += moveSpeed;
+                return beat.onBeat();
+            },
             raylib.KeyboardKey.key_a, raylib.KeyboardKey.key_left => {
-                self.x += moveSpeed;
+                self.x -= moveSpeed;
                 return beat.onBeat();
             },
             raylib.KeyboardKey.key_d, raylib.KeyboardKey.key_right => {
-                self.x -= moveSpeed;
+                self.x += moveSpeed;
                 return beat.onBeat();
             },
             else => {},
@@ -60,7 +59,7 @@ pub const Player = struct {
         return Player{
             .x = x,
             .y = y,
-            .rect = raylib.Rectangle.init(64, 64, textureWidth / 5, textureHeight / 5),
+            .rect = raylib.Rectangle.init(0, 0, textureWidth / 5, textureHeight / 5),
             .texture = texture,
         };
     }
@@ -76,3 +75,16 @@ pub const Tile = enum {
     water,
     end,
 };
+
+pub fn checkTile(player: Player, tile: [][]Tile) PlayerResult {
+    switch (tile[player.x][player.y]) {
+        Tile.start, Tile.log => {},
+        Tile.water => {
+            return PlayerResult.Dead;
+        },
+        Tile.end => {
+            return PlayerResult.Won;
+        },
+    }
+    return PlayerResult.Safe;
+}

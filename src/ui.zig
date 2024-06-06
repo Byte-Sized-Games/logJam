@@ -4,9 +4,22 @@
 
 const raylib = @import("raylib");
 
+pub const UiError = error{
+    NoElementFound,
+    InvalidElement,
+};
+
 pub const Element = union(enum) {
     button: Button,
     textBox: TextBox,
+
+    pub fn unwrap(self: Element) !Button {
+        switch (self) {
+            .button => |btn| return btn,
+            else => return UiError.InvalidElement,
+        }
+        return UiError.NoElementFound;
+    }
 };
 
 pub const Button = struct {

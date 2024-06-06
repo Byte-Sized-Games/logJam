@@ -4,10 +4,11 @@
 
 const std = @import("std");
 const raylib = @import("raylib");
-const Player = @import("entities.zig").Player;
+const entities = @import("entities.zig");
 const screen = @import("screen.zig");
 const ui = @import("ui.zig");
 const game = @import("game.zig");
+const melodie = @import("melodie.zig");
 
 // Initialise Game Values
 
@@ -15,8 +16,16 @@ const game = @import("game.zig");
 const screenHeight = 800;
 const screenWidth = 800;
 
-// Allocator
-var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+// Types
+
+const Scenes = enum {
+    MainMenu,
+    Level,
+};
+
+// Allocator(s)
+const pager = std.heap.page_allocator;
+var arena = std.heap.ArenaAllocator.init(pager);
 
 pub fn main() !void {
     defer arena.deinit();
@@ -31,23 +40,30 @@ pub fn main() !void {
     defer raylib.closeWindow();
 
     // Initialise Player
-    var player = Player.init(4, 4, raylib.Texture2D.init("assets/miku.png"));
+    var level = try game.loadGame("test", allocator);
+    var currentScene = Scenes.MainMenu;
 
     // Initialise Main Menu
-    const menu = try game.mainMenu(&allocator);
+    const menu = try game.mainMenu(allocator);
 
     while (!raylib.windowShouldClose()) {
-        // Logic Loop
-        player.listen();
+        // Logic loop
+        const startButton = try menu.elements.items[0].unwrap();
+
+        if (startButton.clicked()) {
+            currentScene = Scenes.Level;
+        }
+
         // Rendering Loop
         raylib.beginDrawing();
         defer raylib.endDrawing();
         {
-            raylib.clearBackground(raylib.Color.sky_blue);
-            raylib.drawText("Logger", 50, 40, 40, raylib.Color.white);
-            // level.draw();
-            player.render();
-            menu.draw();
+            raylib.clearBackground(raylib.Color.black);
+
+            switch (currentScene) {
+                Scenes.MainMenu => menu.draw(),
+                else => level.tick(),
+            }
         }
     }
 }
@@ -57,4 +73,11 @@ test "simple test" {
     defer list.deinit(); // try commenting this out and see if zig detects the memory leak!
     try list.append(42);
     try std.testing.expectEqual(@as(i32, 42), list.pop());
+}
+
+test "read files" {
+    const testLevel = try screen.Map.parse("testLevel.json", std.testing.allocator);
+    defer testLevel.deinit();
+
+    try std.testing.expectEqual(entities.Tile.start, testLevel.value.tiles[0][0]);
 }
