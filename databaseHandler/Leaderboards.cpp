@@ -40,9 +40,8 @@ int Leaderboards::callback(void* NotUsed, int argc, char** argv, char** azColNam
     return 0;
 }
 
-void Leaderboards::deleteData(int id, const std::string& sql) {
+void Leaderboards::deleteData(int id) {
     std::string deleteSql = "DELETE FROM LEADERBOARD WHERE ID = ?;";
-
     DatabaseManager::deleteData(id, deleteSql);
 }
 

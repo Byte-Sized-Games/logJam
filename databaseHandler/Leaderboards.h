@@ -15,7 +15,7 @@ public:
     int createTable() override;
     std::string getCreateTableSQL() override;
     static int callback(void* NotUsed, int argc, char** argv, char** azColName);
-    void deleteData(int id, const std::string& sql) override;
+    void deleteData(int id);
     void outputData();
     int getHiscore(const std::string& player, int level);
     void insertData(int level, int score, const std::string& player); //oooo overloading (so i can use the same insertData(...) )
