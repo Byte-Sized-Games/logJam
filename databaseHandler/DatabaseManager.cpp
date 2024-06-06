@@ -83,6 +83,29 @@ int DatabaseManager::executeSQL(const std::string& sql, std::function<void(sqlit
     return exit;
 }
 
+void DatabaseManager::executeSQLWithCallback(const std::string& sql, std::function<void(sqlite3_stmt*)> bindFunc, std::function<void(sqlite3_stmt*)> callback) {
+    sqlite3* DB;
+    sqlite3_stmt* stmt;
+
+    int exit = sqlite3_open(this->dir, &DB);
+    checkOpenDatabase(exit);
+
+    exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);
+    checkPrepareStatement(exit);
+
+    // Call the bind function, if provided
+    if (bindFunc) {
+        bindFunc(stmt);
+    }
+
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        callback(stmt);
+    }
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(DB);
+}
+
 int DatabaseManager::prepareSQLStatement(const std::string& sql, sqlite3_stmt*& stmt) {
     int exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);
     checkPrepareStatement(exit);

@@ -28,6 +28,8 @@ public:
     void checkOpenDatabase(int exit);
     void checkPrepareStatement(int exit);
     static void setDir(const char* directory);
+    void executeSQLWithCallback(const std::string &sql, std::function<void(sqlite3_stmt *)> bindFunc,
+                                std::function<void(sqlite3_stmt *)> callback);
 
 
 protected:
