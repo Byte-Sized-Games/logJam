@@ -1,6 +1,4 @@
 #include "DatabaseManager.h"
-#include <iostream>
-#include <chrono>
 
 using namespace std;
 
@@ -17,44 +15,54 @@ DatabaseManager::~DatabaseManager() {
 int DatabaseManager::createDB() {
     sqlite3* DB;
     int exit = 0;
-
-    exit = sqlite3_open(dir, &DB);
-
+    sqlite3_open(dir, &DB);
     sqlite3_close(DB);
-
     return 0;
+}
+
+void DatabaseManager::setDir(const char* directory) {
+    dir = directory;
 }
 
 int DatabaseManager::createTable() {
     sqlite3 *DB;
     char *messageError;
-
     std::string sql = getCreateTableSQL();
-
     try {
-        int exit = 0;
-        exit = sqlite3_open(dir, &DB);
+        int exit = sqlite3_open(this->dir, &DB);  // Open the database
+        checkOpenDatabase(exit);
+
         exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &messageError);
         if (exit != SQLITE_OK) {
-            cerr << "createTable function failed." << endl;
+            std::cerr << "createTable function failed." << std::endl;
             sqlite3_free(messageError);
-        } else
-            cout << "Table created/accessed successfully" << endl;
+        }
+
+        sql = "CREATE TABLE IF NOT EXISTS CurrentValue (ID INTEGER PRIMARY KEY, Value INTEGER);";
+        sqlite3_stmt* stmt;
+        exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);
+        checkPrepareStatement(exit);
+        sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+        sql = "INSERT OR IGNORE INTO CurrentValue (ID, Value) VALUES (1, 0);";
+        exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);
+        checkPrepareStatement(exit);
+        sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+
         sqlite3_close(DB);
     }
     catch (const exception &e) {
         cerr << e.what();
     }
-
     return 0;
 }
-
 
 int DatabaseManager::executeSQL(const std::string& sql, std::function<void(sqlite3_stmt*)> bindFunc) {
     sqlite3* DB;
     sqlite3_stmt* stmt;
 
-    int exit = sqlite3_open(dir, &DB);
+    int exit = sqlite3_open(this->dir, &DB);
     checkOpenDatabase(exit);
 
     exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);
@@ -75,6 +83,29 @@ int DatabaseManager::executeSQL(const std::string& sql, std::function<void(sqlit
     return exit;
 }
 
+void DatabaseManager::executeSQLWithCallback(const std::string& sql, std::function<void(sqlite3_stmt*)> bindFunc, std::function<void(sqlite3_stmt*)> callback) {
+    sqlite3* DB;
+    sqlite3_stmt* stmt;
+
+    int exit = sqlite3_open(this->dir, &DB);
+    checkOpenDatabase(exit);
+
+    exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);
+    checkPrepareStatement(exit);
+
+    // Call the bind function, if provided
+    if (bindFunc) {
+        bindFunc(stmt);
+    }
+
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        callback(stmt);
+    }
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(DB);
+}
+
 int DatabaseManager::prepareSQLStatement(const std::string& sql, sqlite3_stmt*& stmt) {
     int exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);
     checkPrepareStatement(exit);
@@ -82,11 +113,12 @@ int DatabaseManager::prepareSQLStatement(const std::string& sql, sqlite3_stmt*& 
     return SQLITE_OK;
 }
 
-void DatabaseManager::insertData(const std::string& sql, std::function<void(sqlite3_stmt*)> bindFunc) {
+
+void DatabaseManager::insertDataHelper(const std::string& sql, std::function<void(sqlite3_stmt*)> bindFunc) {
     sqlite3* DB;
     sqlite3_stmt* stmt;
 
-    int exit = sqlite3_open(dir, &DB);
+    int exit = sqlite3_open(this->dir, &DB);
     checkOpenDatabase(exit);
 
     exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);
@@ -107,7 +139,7 @@ void DatabaseManager::deleteData(int id, const std::string& sql) {
     sqlite3* DB;
     sqlite3_stmt* stmt;
 
-    int exit = sqlite3_open(dir, &DB);
+    int exit = sqlite3_open(this->dir, &DB);;
     checkOpenDatabase(exit);
 
     exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);

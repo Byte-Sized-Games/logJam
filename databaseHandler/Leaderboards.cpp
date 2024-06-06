@@ -4,8 +4,15 @@
 
 #include "Leaderboards.h"
 
+void Leaderboards::setLeaderboardsDir() {
+    DatabaseManager::setDir("../leaderboards.db");
+}
+
 Leaderboards::Leaderboards() {
-    // Constructor implementation
+    setLeaderboardsDir();
+    sqlite3_open(dir, &DB);
+    DatabaseManager::createDB();
+    // Other initialization...
 }
 
 Leaderboards::~Leaderboards() {
@@ -33,21 +40,8 @@ int Leaderboards::callback(void* NotUsed, int argc, char** argv, char** azColNam
     return 0;
 }
 
-void Leaderboards::insertData(const std::string& sql, std::function<void(sqlite3_stmt*)> bindFunc) {
-    auto now = std::chrono::system_clock::now();
-    std::time_t currentTime = std::chrono::system_clock::to_time_t(now);
-
-    std::string insertSql = "INSERT INTO LEADERBOARD (LEVEL, SCORE, PLAYER, TIME) VALUES (?, ?, ?, ?);";
-
-    DatabaseManager::insertData(insertSql, [bindFunc, currentTime](sqlite3_stmt* stmt) {
-        bindFunc(stmt);
-        sqlite3_bind_int(stmt, 4, static_cast<int>(currentTime));
-    });
-}
-
-void Leaderboards::deleteData(int id, const std::string& sql) {
+void Leaderboards::deleteData(int id) {
     std::string deleteSql = "DELETE FROM LEADERBOARD WHERE ID = ?;";
-
     DatabaseManager::deleteData(id, deleteSql);
 }
 
@@ -103,42 +97,46 @@ int Leaderboards::getHiscore(const std::string& player, int level) {
     return hiscore;
 }
 
-void Leaderboards::genLB(int level) {
-    sqlite3_stmt* stmt;
-
-    // Modify the SQL query to sort by TIME in ascending order as a secondary sorting criterion
-    std::string sql = "SELECT PLAYER, MAX(SCORE), MIN(TIME) FROM LEADERBOARD WHERE LEVEL = ? GROUP BY PLAYER ORDER BY MAX(SCORE) DESC, MIN(TIME) ASC;";
-
-    int exit = sqlite3_open(dir, &DB);
-
-    if (exit != SQLITE_OK) {
-        std::cerr << "Cannot open database: " << sqlite3_errmsg(DB) << std::endl;
-        return;
+void Leaderboards::genLB(int level, char timeRange) {
+    // Build the SQL query based on the time range
+    std::string sql = "SELECT PLAYER, MAX(SCORE), MIN(TIME) FROM LEADERBOARD WHERE LEVEL = ? ";
+    switch (timeRange) {
+        case 'd':
+            sql += "AND strftime('%s', 'now') - TIME <= 86400";  // 86400 seconds in a day
+            break;
+        case 'w':
+            sql += "AND strftime('%s', 'now') - TIME <= 604800";  // 604800 seconds in a week
+            break;
+        case 'm':
+            sql += "AND strftime('%s', 'now') - TIME <= 2629800";  // 2629800 seconds in a month (approx.)
+            break;
+        case 'a':
+            // No additional WHERE clause for all time
+            break;
+        default:
+            std::cerr << "Invalid time range: " << timeRange << std::endl;
+            return;
     }
+    sql += " GROUP BY PLAYER ORDER BY MAX(SCORE) DESC, MIN(TIME) ASC;";
 
-    exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);
+    // Define the bind function
+    auto bindFunc = [level](sqlite3_stmt* stmt) {
+        sqlite3_bind_int(stmt, 1, level);
+    };
 
-    if (exit != SQLITE_OK) {
-        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(DB) << std::endl;
-        return;
-    }
-
-    sqlite3_bind_int(stmt, 1, level);
-
-    std::cout << "Leaderboard for level " << level << ":\n";
-
-    while (sqlite3_step(stmt) == SQLITE_ROW) {
+    // Define the callback function
+    auto callback = [](sqlite3_stmt* stmt) {
         std::string player = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
         int score = sqlite3_column_int(stmt, 1);
 
         std::cout << "Score: " << score << ", Player: " << player << "\n";
-    }
+    };
 
-    sqlite3_finalize(stmt);
-    sqlite3_close(DB);
+    // Execute the query and output the leaderboard
+    executeSQLWithCallback(sql, bindFunc, callback);
 }
 
-void Leaderboards::insertLeaderboardData(int level, int score, const std::string& player) {
+void Leaderboards::insertData(int level, int score, const std::string& player) {
     std::string sql = "INSERT INTO LEADERBOARD (LEVEL, SCORE, PLAYER, TIME) VALUES (?, ?, ?, ?);";
     auto bindFunc = [level, score, player](sqlite3_stmt* stmt) {
         sqlite3_bind_int(stmt, 1, level);
@@ -146,5 +144,5 @@ void Leaderboards::insertLeaderboardData(int level, int score, const std::string
         sqlite3_bind_text(stmt, 3, player.c_str(), -1, SQLITE_STATIC);
         sqlite3_bind_int(stmt, 4, std::time(0)); // Unix timestamp
     };
-    insertData(sql, bindFunc);
+    insertDataHelper(sql, bindFunc);
 }

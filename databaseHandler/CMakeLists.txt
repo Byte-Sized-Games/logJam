@@ -10,6 +10,8 @@ add_executable(databaseHandler main.cpp
         DatabaseManager.h
         Leaderboards.cpp
         Leaderboards.h
+        MapData.cpp
+        MapData.h
 )
 
 find_package(SQLite3 REQUIRED)
