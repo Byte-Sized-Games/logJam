@@ -14,10 +14,13 @@ DONE -Leaderboards, sort with respect to time, day, week, month
 DONE -mapData get id, so id parameter can be fed into generateLB
 lmao no thanks -mapData changesort    **** bonus
 
- -command line support
+done???  -command line support
+ -search and sort instead of if statements
 
  -review and comment code
  */
+
+
 
 void handleCommandLineArguments(int argc, char* argv[]) {
     Leaderboards lb;
