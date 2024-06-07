@@ -4,10 +4,12 @@
 
 #include "MapData.h"
 
+//encapsulation
 void MapData::setMapDataDir() {
     DatabaseManager::setDir("../map-data.db");
 }
 
+//this ensures the database is always created
 MapData::MapData() {
     setMapDataDir();
     sqlite3_open(dir, &DB);
@@ -15,10 +17,8 @@ MapData::MapData() {
     loadCurrentValue();
 }
 
-MapData::~MapData() {
-    // Destructor
-}
-
+//sql query that creates 2 tables. the first one is through createTable as there are reusable portions of the leaderboard table
+//the other table is to store the currentvalue
 int MapData::createTable() {
     int exit = DatabaseManager::createTable();
 
@@ -41,12 +41,9 @@ int MapData::createTable() {
 
     return exit;
 }
-/*
-int MapData::createTable() {
-    return DatabaseManager::createTable();
-}
- */
 
+
+//sql query is used in databasemanager
 std::string MapData::getCreateTableSQL() {
     return "CREATE TABLE IF NOT EXISTS MapData("
            "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -59,6 +56,7 @@ std::string MapData::getCreateTableSQL() {
            "Source TEXT NOT NULL);";
 }
 
+//insert a song entry
 void MapData::insertData(const std::string& songTitle, const std::string& songArtist,
                          int length, int bpm, int difficulty, int level, const std::string& source) {
     // Check for duplicates before inserting a new song
@@ -78,6 +76,7 @@ void MapData::insertData(const std::string& songTitle, const std::string& songAr
     }
 }
 
+//output all data, helpful for debugging
 void MapData::outputData() {
     sqlite3* DB;
     char* messageError;
@@ -97,6 +96,7 @@ void MapData::outputData() {
     sqlite3_close(DB);
 }
 
+//used to print the data, outputData selects the data
 int MapData::callback(void* NotUsed, int argc, char** argv, char** azColName) {
     for(int i = 0; i < argc; i++) {
         std::cout << azColName[i] << ": " << (argv[i] ? argv[i] : "NULL") << "\n";
@@ -110,6 +110,7 @@ void MapData::deleteData(int id) {
     DatabaseManager::deleteData(id, deleteSql);
 }
 
+//go through next and previous levels in the table
 void MapData::nextLv() {
 
     currentLevelId++;
@@ -139,6 +140,8 @@ void MapData::prev10Lv() {
     prevLv();
 }
 
+//display info on the current level, make sure it exists though
+//if it doesnt exist display the first level
 void MapData::displayLevel() {
     std::string sql = "SELECT * FROM MapData WHERE ID = ?;";
     sqlite3_stmt* stmt;
@@ -162,6 +165,7 @@ void MapData::displayLevel() {
     }
 }
 
+//to make sure an error doesnt occur when sqlite tries to display a level that doesnt exist
 bool MapData::tryDisplayLevel(int id, const std::string& sql, sqlite3_stmt*& stmt) {
     if (sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0) != SQLITE_OK) {
         std::cout << "Failed to prepare statement\n";
@@ -194,6 +198,7 @@ bool MapData::tryDisplayLevel(int id, const std::string& sql, sqlite3_stmt*& stm
     return false;
 }
 
+//used in next and previous functions
 int MapData::getMaxId() {
     DatabaseManager::checkOpenDatabase(sqlite3_open(this->dir, &DB));
     std::string sql = "SELECT MAX(ID) FROM MapData;";
@@ -220,6 +225,7 @@ int MapData::getMinId() {
     return minId;
 }
 
+//save it to the tables
 void MapData::saveCurrentValue() {
     std::string sql = "UPDATE CurrentValue SET Value = ? WHERE ID = 1;";
     sqlite3_stmt* stmt;
@@ -234,6 +240,7 @@ void MapData::saveCurrentValue() {
     }
 }
 
+//has to be gotten before its used
 void MapData::loadCurrentValue() {
     std::string sql = "SELECT Value FROM CurrentValue WHERE ID = 1;";
     sqlite3_stmt* stmt;
@@ -250,6 +257,7 @@ void MapData::loadCurrentValue() {
     sqlite3_close(DB);
 }
 
+//a different callback for displayLevel, we dont want it to display certain columns in game
 int MapData::displayLevelCallback(void* NotUsed, int argc, char** argv, char** azColName) {
     for (int i = 0; i < argc; i++) {
         std::string columnName = azColName[i];
@@ -265,16 +273,14 @@ int MapData::getCurrentId() const {
     return currentLevelId;
 }
 
+//gets the currentLevel from the table
 int MapData::getCurrentLevel() {
     std::string sql = "SELECT Level FROM MapData WHERE ID = ?;";
     sqlite3_stmt* stmt;
     int level = -1;  // Initialize level to -1 to indicate an error if no level is found
 
     int exit = sqlite3_open(this->dir, &DB);
-    if (exit != SQLITE_OK) {
-        std::cout << "Cannot open database: " << sqlite3_errmsg(DB) << std::endl;
-        return level;
-    }
+    checkOpenDatabase(exit);
 
     if (sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0) == SQLITE_OK) {
         sqlite3_bind_int(stmt, 1, currentLevelId);
@@ -290,6 +296,7 @@ int MapData::getCurrentLevel() {
     return level;
 }
 
+//to make sure that multiple songs for the same level cant be created, as leaderboards are per level
 bool MapData::isDuplicate(int level) {
     sqlite3* DB;
     sqlite3_stmt* stmt;

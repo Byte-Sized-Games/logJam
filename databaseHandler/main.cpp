@@ -12,14 +12,19 @@ DONE -mapData get song/next/previous
 DONE -mapData get next x 10 or something
 DONE -Leaderboards, sort with respect to time, day, week, month
 DONE -mapData get id, so id parameter can be fed into generateLB
-lmao no thanks -mapData changesort    **** bonus
+unable to -mapData changesort    **** bonus
 
 done???  -command line support
- -search and sort instead of if statements
+done?? -search and sort instead of if statements
 
  -review and comment code
+ main: ~200 lines, mapData.cpp: ~310, Leaderboards.cpp: ~145, DatabaseManager: ~165,
+ mapData.h: ~40, Leaderboards.h: ~25, DatabaseManager.h: ~40
+ 200+310+145+165+40+25+40=925 lines im sobbing
  */
 
+
+//also uses recursion
 int binarySearch(std::pair<std::string, std::function<void(int, char**)>> arr[], int l, int r, std::string x) {
     if (r >= l) {
         int mid = l + (r - l) / 2;
@@ -51,6 +56,7 @@ void handleCommandLineArguments(int argc, char* argv[]) {
 
     // Define the command array
     std::pair<std::string, std::function<void(int, char**)>> commandArray[] = {
+            //this uses binary search to search for the commands instead of many if statements
             {"deleteData", [&lb, &md](int argc, char* argv[]) {
                 if (argc == 4) {
                     std::string className = argv[2];

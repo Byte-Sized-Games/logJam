@@ -4,6 +4,7 @@
 
 #include "Leaderboards.h"
 
+//encapsulation
 void Leaderboards::setLeaderboardsDir() {
     DatabaseManager::setDir("../leaderboards.db");
 }
@@ -12,17 +13,13 @@ Leaderboards::Leaderboards() {
     setLeaderboardsDir();
     sqlite3_open(dir, &DB);
     DatabaseManager::createDB();
-    // Other initialization...
-}
-
-Leaderboards::~Leaderboards() {
-    // Destructor implementation
 }
 
 int Leaderboards::createTable() {
     return DatabaseManager::createTable();
 }
 
+//sql query, the rest is done in database manager class
 std::string Leaderboards::getCreateTableSQL() {
     return "CREATE TABLE IF NOT EXISTS LEADERBOARD("
            "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -32,6 +29,7 @@ std::string Leaderboards::getCreateTableSQL() {
            "TIME   INT);";
 }
 
+//different classback since leaderboards display differently than songs
 int Leaderboards::callback(void* NotUsed, int argc, char** argv, char** azColName) {
     for(int i = 0; i < argc; i++) {
         std::cout << azColName[i] << " = " << (argv[i] ? argv[i] : "NULL") << "\n";
@@ -45,6 +43,7 @@ void Leaderboards::deleteData(int id) {
     DatabaseManager::deleteData(id, deleteSql);
 }
 
+//generic part is in database manager class
 void Leaderboards::outputData() {
     sqlite3* DB;
     char* messageError;
@@ -72,10 +71,7 @@ int Leaderboards::getHiscore(const std::string& player, int level) {
 
     int exit = sqlite3_open(dir, &DB);
 
-    if (exit != SQLITE_OK) {
-        std::cerr << "Cannot open database: " << sqlite3_errmsg(DB) << std::endl;
-        return -1;
-    }
+   checkOpenDatabase(exit);
 
     exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);
 
@@ -97,6 +93,7 @@ int Leaderboards::getHiscore(const std::string& player, int level) {
     return hiscore;
 }
 
+//generate a leaderboard based on the time, d = within last day, w week, m month. a is set by default
 void Leaderboards::genLB(int level, char timeRange) {
     // Build the SQL query based on the time range
     std::string sql = "SELECT PLAYER, MAX(SCORE), MIN(TIME) FROM LEADERBOARD WHERE LEVEL = ? ";
