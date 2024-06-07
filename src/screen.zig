@@ -26,6 +26,7 @@ pub const Level = struct {
     itemSet: raylib.Texture2D,
     monsterSet: raylib.Texture2D,
     beat: melodie.Beat,
+    song: raylib.Sound,
     score: f32,
     complete: bool,
 
@@ -41,9 +42,13 @@ pub const Level = struct {
                 .content = "Main Menu?",
             };
             raylib.clearBackground(raylib.Color.black);
-            raylib.drawText(raylib.textFormat("Victory! Score %.1f", .{self.score}), 100, 250, 60, raylib.Color.gold);
+            raylib.drawText(raylib.textFormat("Victory! Score: %.1f", .{self.score}), 100, 250, 60, raylib.Color.gold);
             returnButton.render();
         } else {
+            // Music
+            if (!raylib.isSoundPlaying(self.song)) {
+                raylib.playSound(self.song);
+            }
 
             // Tick variables
             self.beat.counter += 1;
