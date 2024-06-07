@@ -63,7 +63,7 @@ pub fn main() !void {
                     }
                 },
                 else => {
-                    currentScene = level.tick();
+                    currentScene = try level.tick(allocator);
                 },
             }
         }

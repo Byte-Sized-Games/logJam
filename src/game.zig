@@ -33,6 +33,7 @@ pub fn loadGame(path: [:0]const u8, allocator: std.mem.Allocator) !screen.Level 
     // Initialise Level
     var game: screen.Level = undefined;
     game.complete = false;
+    game.path = path;
     // Load Tilesets
     game.tileSet = raylib.Texture2D.init("assets/32rogues/tiles.png");
     game.monsterSet = raylib.Texture2D.init("assets/32rogues/monsters.png");

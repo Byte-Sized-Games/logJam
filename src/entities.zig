@@ -27,7 +27,7 @@ pub const Player = struct {
         );
     }
 
-    pub fn listen(self: *Player, beat: *melodie.Beat) f32 {
+    pub fn listen(self: *Player, beat: *melodie.Beat, level: *Level) f32 {
         var moveSpeed: usize = 1;
 
         if (raylib.isKeyDown(raylib.KeyboardKey.key_space)) {
@@ -37,18 +37,22 @@ pub const Player = struct {
         switch (raylib.getKeyPressed()) {
             raylib.KeyboardKey.key_w, raylib.KeyboardKey.key_up => {
                 self.y -= moveSpeed;
+                level.moves += 1;
                 return beat.onBeat();
             },
             raylib.KeyboardKey.key_s, raylib.KeyboardKey.key_down => {
                 self.y += moveSpeed;
+                level.moves += 1;
                 return beat.onBeat();
             },
             raylib.KeyboardKey.key_a, raylib.KeyboardKey.key_left => {
                 self.x -= moveSpeed;
+                level.moves += 1;
                 return beat.onBeat();
             },
             raylib.KeyboardKey.key_d, raylib.KeyboardKey.key_right => {
                 self.x += moveSpeed;
+                level.moves += 1;
                 return beat.onBeat();
             },
             else => {},
@@ -56,6 +60,8 @@ pub const Player = struct {
         return -1.0;
     }
 
+    /// Check & react to players position in relation to tilemap and entities
+    /// Essentially a "collision" manager
     pub fn checkTile(player: *Player, map: *Map, level: *Level) void {
         // Check players position based on tiles
         switch (map.tiles[player.y][player.x]) {
@@ -84,7 +90,7 @@ pub const Player = struct {
         }
         // Check player position based on enemies
         switch (map.dungeon[player.y][player.x]) {
-            Dungeon.empty => {},
+            Dungeon.empty => {}, // Nothing Happens
             Dungeon.item => {
                 if (player.armed) {} else {
                     player.armed = true;
