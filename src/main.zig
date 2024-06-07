@@ -47,22 +47,24 @@ pub fn main() !void {
     const menu = try game.mainMenu(allocator);
 
     while (!raylib.windowShouldClose()) {
-        // Logic loop
-        const startButton = try menu.elements.items[0].unwrap();
-
-        if (startButton.clicked()) {
-            currentScene = Scenes.Level;
-        }
 
         // Rendering Loop
         raylib.beginDrawing();
         defer raylib.endDrawing();
         {
-            raylib.clearBackground(raylib.Color.black);
+            raylib.clearBackground(raylib.Color.dark_gray);
 
             switch (currentScene) {
-                Scenes.MainMenu => menu.draw(),
-                else => level.tick(),
+                Scenes.MainMenu => {
+                    menu.draw();
+
+                    if ((try menu.elements.items[0].unwrap()).clicked()) {
+                        currentScene = Scenes.Level;
+                    }
+                },
+                else => {
+                    level.tick();
+                },
             }
         }
     }

@@ -23,7 +23,7 @@ pub fn mainMenu(allocator: std.mem.Allocator) !screen.Menu {
         .x = 50,
         .y = 40,
         .colour = raylib.Color.white,
-        .content = "Logger",
+        .content = "CRAWL",
     } });
 
     return menu;
@@ -32,15 +32,18 @@ pub fn mainMenu(allocator: std.mem.Allocator) !screen.Menu {
 pub fn loadGame(path: [:0]const u8, allocator: std.mem.Allocator) !screen.Level {
     var game: screen.Level = undefined;
 
+    game.complete = false;
     game.tileSet = raylib.Texture2D.init("assets/32rogues/tiles.png");
+    game.monsterSet = raylib.Texture2D.init("assets/32rogues/monsters.png");
+    game.itemSet = raylib.Texture2D.init("assets/32rogues/items.png");
     game.map = (try screen.Map.parse(path, allocator)).value;
     game.beat = (try Beat.parse(path, allocator)).value;
     game.player = entities.Player.init(0, 0, raylib.Texture2D.init("assets/32rogues/player.png"));
     for (game.map.tiles, 0..) |column, i| {
         for (column, 0..) |tile, j| {
             if (tile == entities.Tile.start) {
-                game.player.x = @intCast(j);
-                game.player.y = @intCast(i);
+                game.player.x = j;
+                game.player.y = i;
             }
         }
     }

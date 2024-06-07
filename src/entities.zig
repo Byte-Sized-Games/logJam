@@ -1,5 +1,7 @@
 const raylib = @import("raylib");
 const melodie = @import("melodie.zig");
+const Map = @import("screen.zig").Map;
+const Level = @import("screen.zig").Level;
 
 pub const PlayerResult = enum {
     Safe,
@@ -8,10 +10,11 @@ pub const PlayerResult = enum {
 };
 
 pub const Player = struct {
-    x: i32,
-    y: i32,
+    x: usize,
+    y: usize,
     texture: raylib.Texture2D,
     rect: raylib.Rectangle,
+    armed: bool,
 
     pub fn render(self: Player) void {
         const posX: f32 = @floatFromInt(self.x);
@@ -25,7 +28,7 @@ pub const Player = struct {
     }
 
     pub fn listen(self: *Player, beat: *melodie.Beat) f32 {
-        var moveSpeed: i32 = 1;
+        var moveSpeed: usize = 1;
 
         if (raylib.isKeyDown(raylib.KeyboardKey.key_space)) {
             moveSpeed = 2;
@@ -50,16 +53,64 @@ pub const Player = struct {
             },
             else => {},
         }
-        return 0.0;
+        return -1.0;
     }
 
-    pub fn init(x: i32, y: i32, texture: raylib.Texture2D) Player {
+    pub fn checkTile(player: *Player, map: *Map, level: *Level) void {
+        // Check players position based on tiles
+        switch (map.tiles[player.y][player.x]) {
+            Tile.start, Tile.log => {},
+            Tile.water => {
+                for (map.tiles, 0..) |column, i| {
+                    for (column, 0..) |tile, j| {
+                        if (tile == Tile.start) {
+                            player.x = j;
+                            player.y = i;
+                        }
+                    }
+                }
+            },
+            Tile.end => {
+                level.complete = true;
+            },
+        }
+        // Check player position based on enemies
+        switch (map.dungeon[player.y][player.x]) {
+            Dungeon.empty => {},
+            Dungeon.item => {
+                if (player.armed) {} else {
+                    player.armed = true;
+                    map.dungeon[player.y][player.x] = Dungeon.empty;
+                }
+            },
+            Dungeon.monster => {
+                if (player.armed) {
+                    map.dungeon[player.y][player.x] = Dungeon.empty;
+                    player.armed = false;
+                    level.score += 200;
+                } else {
+                    level.score -= 200;
+                    for (map.tiles, 0..) |column, i| {
+                        for (column, 0..) |tile, j| {
+                            if (tile == Tile.start) {
+                                player.x = j;
+                                player.y = i;
+                            }
+                        }
+                    }
+                }
+            },
+        }
+    }
+
+    pub fn init(x: usize, y: usize, texture: raylib.Texture2D) Player {
         const textureHeight: f32 = @floatFromInt(texture.height);
         const textureWidth: f32 = @floatFromInt(texture.width);
         return Player{
             .x = x,
             .y = y,
             .rect = raylib.Rectangle.init(0, 0, textureWidth / 5, textureHeight / 5),
+            .armed = false,
             .texture = texture,
         };
     }
@@ -76,15 +127,8 @@ pub const Tile = enum {
     end,
 };
 
-pub fn checkTile(player: Player, tile: [][]Tile) PlayerResult {
-    switch (tile[player.x][player.y]) {
-        Tile.start, Tile.log => {},
-        Tile.water => {
-            return PlayerResult.Dead;
-        },
-        Tile.end => {
-            return PlayerResult.Won;
-        },
-    }
-    return PlayerResult.Safe;
-}
+pub const Dungeon = enum {
+    empty,
+    monster,
+    item,
+};

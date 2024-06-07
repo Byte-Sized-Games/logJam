@@ -23,38 +23,66 @@ pub const Level = struct {
     player: entities.Player,
     map: Map,
     tileSet: raylib.Texture2D,
+    itemSet: raylib.Texture2D,
+    monsterSet: raylib.Texture2D,
     beat: melodie.Beat,
     score: f32,
+    complete: bool,
 
     pub fn tick(self: *Level) void {
-        // Tick variables
-        self.beat.counter += 1;
-        self.score += self.player.listen(&self.beat) * 100;
+        if (self.complete) {
+            const returnButton = ui.Button{
+                .x = 250,
+                .y = 400,
+                .bg = raylib.Color.green,
+                .fg = raylib.Color.white,
+                .width = 175,
+                .height = 40,
+                .content = "Main Menu?",
+            };
+            raylib.clearBackground(raylib.Color.black);
+            raylib.drawText(raylib.textFormat("Victory! Score %.1f", .{self.score}), 100, 250, 60, raylib.Color.gold);
+            returnButton.render();
+        } else {
 
-        // Render content
-        self.map.draw(self.tileSet);
-        self.player.render();
+            // Tick variables
+            self.beat.counter += 1;
+            const accuracy = self.player.listen(&self.beat);
+            if (accuracy == -1.0) {} else if (accuracy < 0.35) {
+                self.score = 0;
+            } else {
+                self.score += accuracy * 100;
+            }
 
-        if (self.beat.onBeat() >= 0.75) {
-            raylib.drawCircle(400, 750, 15.0, raylib.Color.red);
+            // Render content
+            self.map.draw(self.*);
+            self.player.render();
+
+            if (self.beat.onBeat() >= 0.75) {
+                raylib.drawCircle(400, 750, 15.0, raylib.Color.red);
+            }
+
+            // Render Score
+
+            raylib.drawText(raylib.textFormat("Score: %.1f", .{self.score}), 550, 50, 35, raylib.Color.white);
+
+            self.player.checkTile(&self.map, self);
         }
-
-        // Render Score
-
-        raylib.drawText(raylib.textFormat("Score: %.1f", .{self.score}), 550, 50, 35, raylib.Color.white);
     }
 };
 
 pub const Map = struct {
     tiles: [][]entities.Tile,
+    dungeon: [][]entities.Dungeon,
     par: u32,
 
-    pub fn draw(self: *Map, tileSet: raylib.Texture2D) void {
+    pub fn draw(self: *Map, level: Level) void {
         var x: f32 = 0;
         var y: f32 = 0;
+        // Draw Background
         for (self.tiles) |column| {
             for (column) |tile| {
-                tileSet.drawPro(
+                level.tileSet.drawPro(
                     raylib.Rectangle.init(0, 192, 32, 32),
                     raylib.Rectangle.init(0, 0, 100, 100),
                     raylib.Vector2.init(x, y),
@@ -62,29 +90,55 @@ pub const Map = struct {
                     raylib.Color.white,
                 );
                 switch (tile) {
-                    entities.Tile.start => tileSet.drawPro(
+                    entities.Tile.start => level.tileSet.drawPro(
                         raylib.Rectangle.init(256, 512, 32, 32),
                         raylib.Rectangle.init(0, 0, 100, 100),
                         raylib.Vector2.init(x, y),
                         0,
                         raylib.Color.white,
                     ),
-                    entities.Tile.log => tileSet.drawPro(
+                    entities.Tile.log => level.tileSet.drawPro(
                         raylib.Rectangle.init(64, 192, 32, 32),
                         raylib.Rectangle.init(0, 0, 100, 100),
                         raylib.Vector2.init(x, y),
                         0,
                         raylib.Color.white,
                     ),
-                    entities.Tile.water => tileSet.drawPro(
+                    entities.Tile.water => level.tileSet.drawPro(
                         raylib.Rectangle.init(0, 96, 32, 32),
                         raylib.Rectangle.init(0, 0, 100, 100),
                         raylib.Vector2.init(x, y),
                         0,
                         raylib.Color.white,
                     ),
-                    entities.Tile.end => tileSet.drawPro(
+                    entities.Tile.end => level.tileSet.drawPro(
                         raylib.Rectangle.init(224, 512, 32, 32),
+                        raylib.Rectangle.init(0, 0, 100, 100),
+                        raylib.Vector2.init(x, y),
+                        0,
+                        raylib.Color.white,
+                    ),
+                }
+                x -= 100;
+            }
+            x = 0;
+            y -= 100;
+        }
+        // Draw Item & Monsters
+        y = 0;
+        for (self.dungeon) |column| {
+            for (column) |dgn| {
+                switch (dgn) {
+                    entities.Dungeon.empty => {},
+                    entities.Dungeon.monster => level.monsterSet.drawPro(
+                        raylib.Rectangle.init(32, 224, 32, 32),
+                        raylib.Rectangle.init(0, 0, 100, 100),
+                        raylib.Vector2.init(x, y),
+                        0,
+                        raylib.Color.white,
+                    ),
+                    entities.Dungeon.item => level.itemSet.drawPro(
+                        raylib.Rectangle.init(128, 32, 32, 32),
                         raylib.Rectangle.init(0, 0, 100, 100),
                         raylib.Vector2.init(x, y),
                         0,

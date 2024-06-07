@@ -55,6 +55,6 @@ pub const TextBox = struct {
     colour: raylib.Color,
 
     pub fn render(self: TextBox) void {
-        raylib.drawText(self.content, self.x, self.y, 30, self.colour);
+        raylib.drawText(self.content, self.x, self.y, 50, self.colour);
     }
 };
