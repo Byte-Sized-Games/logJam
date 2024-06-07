@@ -3,6 +3,7 @@
 //
 
 const ui = @import("ui.zig");
+const Scene = @import("main.zig").Scenes;
 const entities = @import("entities.zig");
 const melodie = @import("melodie.zig");
 const raylib = @import("raylib");
@@ -28,9 +29,10 @@ pub const Level = struct {
     beat: melodie.Beat,
     song: raylib.Sound,
     score: f32,
+    moves: u32,
     complete: bool,
 
-    pub fn tick(self: *Level) void {
+    pub fn tick(self: *Level) Scene {
         if (self.complete) {
             const returnButton = ui.Button{
                 .x = 250,
@@ -44,6 +46,11 @@ pub const Level = struct {
             raylib.clearBackground(raylib.Color.black);
             raylib.drawText(raylib.textFormat("Victory! Score: %.1f", .{self.score}), 100, 250, 60, raylib.Color.gold);
             returnButton.render();
+
+            if (returnButton.clicked()) {
+                self.complete = false;
+                return Scene.MainMenu;
+            }
         } else {
             // Music
             if (!raylib.isSoundPlaying(self.song)) {
@@ -73,6 +80,7 @@ pub const Level = struct {
 
             self.player.checkTile(&self.map, self);
         }
+        return Scene.Level;
     }
 };
 

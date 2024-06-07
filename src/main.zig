@@ -18,7 +18,7 @@ const screenWidth = 800;
 
 // Types
 
-const Scenes = enum {
+pub const Scenes = enum {
     MainMenu,
     Level,
 };
@@ -63,7 +63,7 @@ pub fn main() !void {
                     }
                 },
                 else => {
-                    level.tick();
+                    currentScene = level.tick();
                 },
             }
         }

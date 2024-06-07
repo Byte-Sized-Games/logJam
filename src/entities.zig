@@ -72,6 +72,14 @@ pub const Player = struct {
             },
             Tile.end => {
                 level.complete = true;
+                for (map.tiles, 0..) |column, i| {
+                    for (column, 0..) |tile, j| {
+                        if (tile == Tile.start) {
+                            player.x = j;
+                            player.y = i;
+                        }
+                    }
+                }
             },
         }
         // Check player position based on enemies

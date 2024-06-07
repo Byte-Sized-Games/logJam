@@ -60,5 +60,6 @@ pub fn loadGame(path: [:0]const u8, allocator: std.mem.Allocator) !screen.Level 
         }
     }
     game.score = 0;
+    game.moves = 0;
     return game;
 }
