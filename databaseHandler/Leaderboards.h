@@ -10,7 +10,6 @@
 class Leaderboards : public DatabaseManager {
 public:
 
-    ~Leaderboards();
     Leaderboards();
     int createTable() override;
     std::string getCreateTableSQL() override;

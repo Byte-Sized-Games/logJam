@@ -8,10 +8,6 @@ DatabaseManager::DatabaseManager() {
     sqlite3_open(dir, &DB);
 }
 
-DatabaseManager::~DatabaseManager() {
-    sqlite3_close(DB);
-}
-
 int DatabaseManager::createDB() {
     sqlite3* DB;
     int exit = 0;
@@ -24,6 +20,8 @@ void DatabaseManager::setDir(const char* directory) {
     dir = directory;
 }
 
+//theres a lot that can be shared between leaderboards and mapdata, so use inheritance
+//its just the sql query thats different
 int DatabaseManager::createTable() {
     sqlite3 *DB;
     char *messageError;
@@ -58,31 +56,7 @@ int DatabaseManager::createTable() {
     return 0;
 }
 
-int DatabaseManager::executeSQL(const std::string& sql, std::function<void(sqlite3_stmt*)> bindFunc) {
-    sqlite3* DB;
-    sqlite3_stmt* stmt;
-
-    int exit = sqlite3_open(this->dir, &DB);
-    checkOpenDatabase(exit);
-
-    exit = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, 0);
-    checkPrepareStatement(exit);
-
-    // Call the bind function, if provided
-    if (bindFunc) {
-        bindFunc(stmt);
-    }
-
-    if (sqlite3_step(stmt) != SQLITE_DONE) {
-        std::cerr << "Failed to execute statement: " << sqlite3_errmsg(DB) << std::endl;
-    }
-
-    sqlite3_finalize(stmt);
-    sqlite3_close(DB);
-
-    return exit;
-}
-
+//it has to do checks and generate a statement since we're inserting variables
 void DatabaseManager::executeSQLWithCallback(const std::string& sql, std::function<void(sqlite3_stmt*)> bindFunc, std::function<void(sqlite3_stmt*)> callback) {
     sqlite3* DB;
     sqlite3_stmt* stmt;
@@ -113,7 +87,7 @@ int DatabaseManager::prepareSQLStatement(const std::string& sql, sqlite3_stmt*& 
     return SQLITE_OK;
 }
 
-
+//some generic checks for all insertData functions, to be inherited
 void DatabaseManager::insertDataHelper(const std::string& sql, std::function<void(sqlite3_stmt*)> bindFunc) {
     sqlite3* DB;
     sqlite3_stmt* stmt;
@@ -135,6 +109,7 @@ void DatabaseManager::insertDataHelper(const std::string& sql, std::function<voi
     sqlite3_close(DB);
 }
 
+//we delete rows based on a unique id
 void DatabaseManager::deleteData(int id, const std::string& sql) {
     sqlite3* DB;
     sqlite3_stmt* stmt;
@@ -155,6 +130,7 @@ void DatabaseManager::deleteData(int id, const std::string& sql) {
     sqlite3_close(DB);
 }
 
+//the generic checks
 void DatabaseManager::checkOpenDatabase(int exit) {
     if (exit != SQLITE_OK) {
         std::cerr << "Cannot open database: " << sqlite3_errmsg(DB) << std::endl;

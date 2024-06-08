@@ -10,7 +10,6 @@
 class MapData : public DatabaseManager {
 public:
     MapData();
-    ~MapData();
     int createTable() override;
     std::string getCreateTableSQL() override;
     void insertData(const std::string& songTitle, const std::string& songArtist,
