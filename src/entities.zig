@@ -15,43 +15,38 @@ pub const Player = struct {
     texture: raylib.Texture2D,
     rect: raylib.Rectangle,
     armed: bool,
+    keys: u32,
 
     pub fn render(self: Player) void {
         const posX: f32 = @floatFromInt(self.x);
         const posY: f32 = @floatFromInt(self.y);
         self.texture.drawEx(
-            raylib.Vector2.init(posX * 100, posY * 100),
+            raylib.Vector2.init(posX * 64, posY * 64),
             0,
-            3.125,
+            2,
             raylib.Color.white,
         );
     }
 
     pub fn listen(self: *Player, beat: *melodie.Beat, level: *Level) f32 {
-        var moveSpeed: usize = 1;
-
-        if (raylib.isKeyDown(raylib.KeyboardKey.key_space)) {
-            moveSpeed = 2;
-        }
-
         switch (raylib.getKeyPressed()) {
             raylib.KeyboardKey.key_w, raylib.KeyboardKey.key_up => {
-                self.y -= moveSpeed;
+                self.y -= self.collide(&level.map, Direction.north);
                 level.moves += 1;
                 return beat.onBeat();
             },
             raylib.KeyboardKey.key_s, raylib.KeyboardKey.key_down => {
-                self.y += moveSpeed;
+                self.y += self.collide(&level.map, Direction.south);
                 level.moves += 1;
                 return beat.onBeat();
             },
             raylib.KeyboardKey.key_a, raylib.KeyboardKey.key_left => {
-                self.x -= moveSpeed;
+                self.x -= self.collide(&level.map, Direction.west);
                 level.moves += 1;
                 return beat.onBeat();
             },
             raylib.KeyboardKey.key_d, raylib.KeyboardKey.key_right => {
-                self.x += moveSpeed;
+                self.x += self.collide(&level.map, Direction.east);
                 level.moves += 1;
                 return beat.onBeat();
             },
@@ -65,8 +60,8 @@ pub const Player = struct {
     pub fn checkTile(player: *Player, map: *Map, level: *Level) void {
         // Check players position based on tiles
         switch (map.tiles[player.y][player.x]) {
-            Tile.start, Tile.log => {},
-            Tile.water => {
+            Tile.start, Tile.floor => {},
+            Tile.wall => {
                 for (map.tiles, 0..) |column, i| {
                     for (column, 0..) |tile, j| {
                         if (tile == Tile.start) {
@@ -114,7 +109,56 @@ pub const Player = struct {
                     }
                 }
             },
+            Dungeon.key => {
+                player.keys += 1;
+                map.dungeon[player.y][player.x] = Dungeon.empty;
+            },
+            Dungeon.door => {
+                if (player.keys > 0) {
+                    player.keys -= 1;
+                    map.dungeon[player.y][player.x] = Dungeon.doorOpen;
+                } else {}
+            },
+            else => {},
         }
+    }
+
+    fn collide(self: *Player, map: *Map, dir: Direction) usize {
+        switch (dir) {
+            Direction.north => {
+                if (map.tiles[self.y - 1][self.x] == Tile.wall or map.dungeon[self.y - 1][self.x] == Dungeon.door) {
+                    if (map.dungeon[self.y - 1][self.x] == Dungeon.door and self.keys > 0) {
+                        map.dungeon[self.y - 1][self.x] = Dungeon.doorOpen;
+                    }
+                    return 0;
+                }
+            },
+            Direction.south => {
+                if (map.tiles[self.y + 1][self.x] == Tile.wall or map.dungeon[self.y + 1][self.x] == Dungeon.door) {
+                    if (map.dungeon[self.y + 1][self.x] == Dungeon.door and self.keys > 0) {
+                        map.dungeon[self.y + 1][self.x] = Dungeon.doorOpen;
+                    }
+                    return 0;
+                }
+            },
+            Direction.east => {
+                if (map.tiles[self.y][self.x + 1] == Tile.wall or map.dungeon[self.y][self.x + 1] == Dungeon.door) {
+                    if (map.dungeon[self.y][self.x + 1] == Dungeon.door and self.keys > 0) {
+                        map.dungeon[self.y][self.x + 1] = Dungeon.doorOpen;
+                    }
+                    return 0;
+                }
+            },
+            Direction.west => {
+                if (map.tiles[self.y][self.x - 1] == Tile.wall or map.dungeon[self.y][self.x - 1] == Dungeon.door) {
+                    if (map.dungeon[self.y][self.x - 1] == Dungeon.door and self.keys > 0) {
+                        map.dungeon[self.y][self.x - 1] = Dungeon.doorOpen;
+                    }
+                    return 0;
+                }
+            },
+        }
+        return 1;
     }
 
     pub fn init(x: usize, y: usize, texture: raylib.Texture2D) Player {
@@ -125,6 +169,7 @@ pub const Player = struct {
             .y = y,
             .rect = raylib.Rectangle.init(0, 0, textureWidth / 5, textureHeight / 5),
             .armed = false,
+            .keys = 0,
             .texture = texture,
         };
     }
@@ -136,8 +181,8 @@ pub const Player = struct {
 
 pub const Tile = enum {
     start,
-    log,
-    water,
+    floor,
+    wall,
     end,
 };
 
@@ -145,4 +190,14 @@ pub const Dungeon = enum {
     empty,
     monster,
     item,
+    key,
+    door,
+    doorOpen,
+};
+
+const Direction = enum {
+    north,
+    south,
+    east,
+    west,
 };

@@ -7,7 +7,10 @@ const raylib = @import("raylib");
 const std = @import("std");
 
 pub fn mainMenu(allocator: std.mem.Allocator) !screen.Menu {
-    var menu = screen.Menu{ .elements = std.ArrayList(ui.Element).init(allocator) };
+    var menu = screen.Menu{
+        .elements = std.ArrayList(ui.Element).init(allocator),
+        .background = raylib.Texture2D.init("assets/mainMenu.png"),
+    };
 
     try menu.elements.append(ui.Element{ .button = ui.Button{
         .x = 40,
@@ -38,6 +41,7 @@ pub fn loadGame(path: [:0]const u8, allocator: std.mem.Allocator) !screen.Level 
     game.tileSet = raylib.Texture2D.init("assets/32rogues/tiles.png");
     game.monsterSet = raylib.Texture2D.init("assets/32rogues/monsters.png");
     game.itemSet = raylib.Texture2D.init("assets/32rogues/items.png");
+    game.winScreen = raylib.Texture2D.init("assets/win.png");
     // Load Map
     game.map = (try screen.Map.parse(path, allocator)).value;
     // Load Music

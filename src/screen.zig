@@ -32,6 +32,7 @@ pub const Level = struct {
     score: f32,
     moves: u32,
     complete: bool,
+    winScreen: raylib.Texture2D,
 
     /// Batch update all items in a level
     pub fn tick(self: *Level, allocator: std.mem.Allocator) !Scene {
@@ -46,7 +47,9 @@ pub const Level = struct {
                 .height = 40,
                 .content = "Main Menu?",
             };
+            // Draw Victory Screen
             raylib.clearBackground(raylib.Color.black);
+            self.winScreen.draw(0, 0, raylib.Color.white);
             // Victory text!
             raylib.drawText("Victory!", 50, 250, 60, raylib.Color.gold);
             raylib.drawText(
@@ -74,6 +77,7 @@ pub const Level = struct {
             if (returnButton.clicked()) {
                 // Reset level values
                 self.complete = false;
+                self.player.armed = false;
                 self.score = 0;
                 self.moves = 0;
                 // Stop the music
@@ -99,7 +103,7 @@ pub const Level = struct {
             if (accuracy == -1.0) {
                 self.score -= 0.01;
             } else if (accuracy < 0.35) {
-                self.score -= 10;
+                self.score -= 100;
             } else {
                 self.score += accuracy * 100;
             }
@@ -109,11 +113,11 @@ pub const Level = struct {
             self.player.render();
 
             if (self.beat.onBeat() >= 0.75) {
-                raylib.drawCircle(400, 750, 15.0, raylib.Color.red);
+                raylib.drawCircle(320, 550, 15.0, raylib.Color.red);
             }
 
             // Render Score
-            raylib.drawText(raylib.textFormat("Score: %.1f", .{self.score}), 550, 50, 35, raylib.Color.white);
+            raylib.drawText(raylib.textFormat("Score: %.1f", .{self.score}), 350, 50, 25, raylib.Color.white);
         }
         return Scene.Level;
     }
@@ -134,7 +138,7 @@ pub const Map = struct {
             for (column) |tile| {
                 level.tileSet.drawPro(
                     raylib.Rectangle.init(0, 192, 32, 32),
-                    raylib.Rectangle.init(0, 0, 100, 100),
+                    raylib.Rectangle.init(0, 0, 64, 64),
                     raylib.Vector2.init(x, y),
                     0,
                     raylib.Color.white,
@@ -142,37 +146,37 @@ pub const Map = struct {
                 switch (tile) {
                     entities.Tile.start => level.tileSet.drawPro(
                         raylib.Rectangle.init(256, 512, 32, 32),
-                        raylib.Rectangle.init(0, 0, 100, 100),
+                        raylib.Rectangle.init(0, 0, 64, 64),
                         raylib.Vector2.init(x, y),
                         0,
                         raylib.Color.white,
                     ),
-                    entities.Tile.log => level.tileSet.drawPro(
+                    entities.Tile.floor => level.tileSet.drawPro(
                         raylib.Rectangle.init(64, 192, 32, 32),
-                        raylib.Rectangle.init(0, 0, 100, 100),
+                        raylib.Rectangle.init(0, 0, 64, 64),
                         raylib.Vector2.init(x, y),
                         0,
                         raylib.Color.white,
                     ),
-                    entities.Tile.water => level.tileSet.drawPro(
+                    entities.Tile.wall => level.tileSet.drawPro(
                         raylib.Rectangle.init(0, 96, 32, 32),
-                        raylib.Rectangle.init(0, 0, 100, 100),
+                        raylib.Rectangle.init(0, 0, 64, 64),
                         raylib.Vector2.init(x, y),
                         0,
                         raylib.Color.white,
                     ),
                     entities.Tile.end => level.tileSet.drawPro(
                         raylib.Rectangle.init(224, 512, 32, 32),
-                        raylib.Rectangle.init(0, 0, 100, 100),
+                        raylib.Rectangle.init(0, 0, 64, 64),
                         raylib.Vector2.init(x, y),
                         0,
                         raylib.Color.white,
                     ),
                 }
-                x -= 100;
+                x -= 64;
             }
             x = 0;
-            y -= 100;
+            y -= 64;
         }
         // Draw Item & Monsters
         y = 0;
@@ -182,22 +186,44 @@ pub const Map = struct {
                     entities.Dungeon.empty => {},
                     entities.Dungeon.monster => level.monsterSet.drawPro(
                         raylib.Rectangle.init(32, 224, 32, 32),
-                        raylib.Rectangle.init(0, 0, 100, 100),
+                        raylib.Rectangle.init(0, 0, 64, 64),
                         raylib.Vector2.init(x, y),
                         0,
                         raylib.Color.white,
                     ),
                     entities.Dungeon.item => level.itemSet.drawPro(
                         raylib.Rectangle.init(128, 32, 32, 32),
-                        raylib.Rectangle.init(0, 0, 100, 100),
+                        raylib.Rectangle.init(0, 0, 64, 64),
                         raylib.Vector2.init(x, y),
                         0,
                         raylib.Color.white,
                     ),
+                    entities.Dungeon.key => level.itemSet.drawPro(
+                        raylib.Rectangle.init(32, 512, 32, 32),
+                        raylib.Rectangle.init(0, 0, 64, 64),
+                        raylib.Vector2.init(x, y),
+                        0,
+                        raylib.Color.white,
+                    ),
+                    entities.Dungeon.door => level.tileSet.drawPro(
+                        raylib.Rectangle.init(64, 512, 32, 32),
+                        raylib.Rectangle.init(0, 0, 64, 64),
+                        raylib.Vector2.init(x, y),
+                        0,
+                        raylib.Color.white,
+                    ),
+                    entities.Dungeon.doorOpen => level.tileSet.drawPro(
+                        raylib.Rectangle.init(96, 512, 32, 32),
+                        raylib.Rectangle.init(0, 0, 64, 64),
+                        raylib.Vector2.init(x, y),
+                        0,
+                        raylib.Color.white,
+                    ),
+                    // else => {},
                 }
-                x -= 100;
+                x -= 64;
             }
-            y -= 100;
+            y -= 64;
             x = 0;
         }
     }
@@ -221,8 +247,10 @@ pub const Map = struct {
 
 pub const Menu = struct {
     elements: ArrayList(ui.Element),
+    background: raylib.Texture2D,
 
     pub fn draw(self: Menu) void {
+        self.background.draw(0, 0, raylib.Color.white);
         for (self.elements.items) |element| {
             switch (element) {
                 .button => |btn| {

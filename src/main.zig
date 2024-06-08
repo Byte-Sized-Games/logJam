@@ -13,8 +13,8 @@ const melodie = @import("melodie.zig");
 // Initialise Game Values
 
 // Screen
-const screenHeight = 800;
-const screenWidth = 800;
+const screenHeight = 640;
+const screenWidth = 640;
 
 // Types
 
@@ -30,8 +30,6 @@ var arena = std.heap.ArenaAllocator.init(pager);
 pub fn main() !void {
     defer arena.deinit();
     const allocator = arena.allocator();
-
-    // const level = try toml.decode(screen.Map, arena, levelConfig);
 
     // Initialise Window
     raylib.initAudioDevice();
