@@ -2,6 +2,8 @@
 
 [![Static Badge](https://img.shields.io/badge/linux-build-gold?style=flat-square&logo=linux&logoColor=black&labelColor=gold&color=grey)](https://nightly.link/Byte-Sized-Games/logJam/workflows/zig-build/main/crawl_nightly)
 
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/Byte-Sized-Games/logJam/zig-build.yml?style=flat-square&label=linux%20build)
+
 (Un)apologetically Canadian rhythm/puzzle/adventure game for your arcade cabinet/smart fridge/laptop. Written with Zig and Raylib with ❤️.
 
 ## Features
