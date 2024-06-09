@@ -10,13 +10,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: goto-bus-stop/setup-zig@v2
+      - name: compile nightly
+        uses: actions/checkout@v2
+
+      - name: prepare zig
+        uses: goto-bus-stop/setup-zig@v2
         with:
           version: 0.13.0
-      - run: sudo apt-get update
-      - run: sudo apt-get install --fix-missing --no-install-recommends libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libglew-dev libopenal-dev  libgl1-mesa-dev
-      - run: zig build
+      - name: install missing libraries
+        run: sudo apt-get update && sudo apt-get install --fix-missing --no-install-recommends libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libglew-dev libopenal-dev  libgl1-mesa-dev
+
+      - name: build project
+        run: zig build
+
+      - name: upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: crawl_nightly
+          path: zig-out/bin/crawl
   lint:
     runs-on: ubuntu-latest
     steps:

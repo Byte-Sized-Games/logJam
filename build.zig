@@ -25,7 +25,7 @@ pub fn build(b: *std.Build) void {
     const raylib_artifact = raylib_dep.artifact("raylib"); // raylib C library
 
     const exe = b.addExecutable(.{
-        .name = "logJam",
+        .name = "crawl",
         .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,
