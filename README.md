@@ -1,6 +1,8 @@
 # Logger
 
-(Un)apologetically Canadian rhythm/puzzle/adventure game for your arcade cabinet/smart fridge/laptop. Written w/ Rust & Macroquad with ❤️.
+[![Static Badge](https://img.shields.io/badge/linux-build-gold?style=flat-square&logo=linux&logoColor=black&labelColor=gold&color=grey)](https://nightly.link/Byte-Sized-Games/logJam/workflows/zig-build/main/crawl_nightly)
+
+(Un)apologetically Canadian rhythm/puzzle/adventure game for your arcade cabinet/smart fridge/laptop. Written with Zig and Raylib with ❤️.
 
 ## Features
 
@@ -12,7 +14,7 @@
 ### ⚙️ Technologies
 
 - Programmed in Zig for speed & explicit memory management
-- Built with raylib library
+- Built with Raylib library
 
 ## Building this project
 
