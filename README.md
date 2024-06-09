@@ -28,5 +28,12 @@ Go to [ziglang.org](https://ziglang.org) to install Zig (0.13.0) for the system 
 
 ### Binaries
 
+Nightly builds are available by clicking the badges above.
+
+> [!IMPORTANT]
+> Currently none of the assets are bundled with the binary, meaning that the
+> repository still needs to be cloned in order to properly run the game files.
+> This will eventually be remedied
+
 Whenever we hit a release or tag, you'll find them on the releases page.
 If and when we hit 1.0.0, an itch.io page will also be available!
