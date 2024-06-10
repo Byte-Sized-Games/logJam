@@ -5,7 +5,8 @@
     "macroquad",
     "raylib",
     "RAYWHITE",
-    "SKYBLUE"
+    "SKYBLUE",
+    "ziglang"
   ],
   "C_Cpp.clang_format_fallbackStyle": "{BasedOnStyle: llvm, UseTab: Always, IndentWidth: 4, TabWidth: 4}"
 }
