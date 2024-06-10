@@ -33,7 +33,7 @@ pub const Button = struct {
 
     pub fn render(self: Button) void {
         raylib.drawRectangle(self.x, self.y, self.width, self.height, self.bg);
-        raylib.drawText(self.content, self.x + 2, self.y, 30, self.fg);
+        raylib.drawText(self.content, self.x + 10, self.y + 10, 30, self.fg);
     }
 
     pub fn clicked(self: Button) bool {

@@ -37,12 +37,16 @@ pub fn main() !void {
     raylib.setTargetFPS(60);
     defer raylib.closeWindow();
 
-    // Initialise Player
+    // Initialise Game
     var level = try game.loadGame("test", allocator);
+    // Initialise Main Menu
+    var menu = try game.mainMenu(allocator);
     var currentScene = Scenes.MainMenu;
 
-    // Initialise Main Menu
-    const menu = try game.mainMenu(allocator);
+    defer {
+        level.deinit();
+        menu.deinit();
+    }
 
     while (!raylib.windowShouldClose()) {
 
@@ -58,6 +62,10 @@ pub fn main() !void {
 
                     if ((try menu.elements.items[0].unwrap()).clicked()) {
                         currentScene = Scenes.Level;
+                    }
+
+                    if ((try menu.elements.items[1].unwrap()).clicked()) {
+                        currentScene = Scenes.Credits;
                     }
                 },
                 else => {

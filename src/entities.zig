@@ -1,6 +1,6 @@
 const raylib = @import("raylib");
 const melodie = @import("melodie.zig");
-const Map = @import("screen.zig").Map;
+const Map = @import("map.zig").Map;
 const Level = @import("screen.zig").Level;
 
 pub const PlayerResult = enum {
@@ -59,10 +59,10 @@ pub const Player = struct {
     /// Essentially a "collision" manager
     pub fn checkTile(player: *Player, map: *Map, level: *Level) void {
         // Check players position based on tiles
-        switch (map.tiles[player.y][player.x]) {
+        switch (map.val.tiles[player.y][player.x]) {
             Tile.start, Tile.floor => {},
             Tile.wall => {
-                for (map.tiles, 0..) |column, i| {
+                for (map.val.tiles, 0..) |column, i| {
                     for (column, 0..) |tile, j| {
                         if (tile == Tile.start) {
                             player.x = j;
@@ -73,7 +73,7 @@ pub const Player = struct {
             },
             Tile.end => {
                 level.complete = true;
-                for (map.tiles, 0..) |column, i| {
+                for (map.val.tiles, 0..) |column, i| {
                     for (column, 0..) |tile, j| {
                         if (tile == Tile.start) {
                             player.x = j;
@@ -84,22 +84,22 @@ pub const Player = struct {
             },
         }
         // Check player position based on enemies
-        switch (map.dungeon[player.y][player.x]) {
+        switch (map.val.dungeon[player.y][player.x]) {
             Dungeon.empty => {}, // Nothing Happens
             Dungeon.item => {
                 if (player.armed) {} else {
                     player.armed = true;
-                    map.dungeon[player.y][player.x] = Dungeon.empty;
+                    map.val.dungeon[player.y][player.x] = Dungeon.empty;
                 }
             },
             Dungeon.monster => {
                 if (player.armed) {
-                    map.dungeon[player.y][player.x] = Dungeon.empty;
+                    map.val.dungeon[player.y][player.x] = Dungeon.empty;
                     player.armed = false;
                     level.score += 200;
                 } else {
                     level.score -= 200;
-                    for (map.tiles, 0..) |column, i| {
+                    for (map.val.tiles, 0..) |column, i| {
                         for (column, 0..) |tile, j| {
                             if (tile == Tile.start) {
                                 player.x = j;
@@ -111,12 +111,12 @@ pub const Player = struct {
             },
             Dungeon.key => {
                 player.keys += 1;
-                map.dungeon[player.y][player.x] = Dungeon.empty;
+                map.val.dungeon[player.y][player.x] = Dungeon.empty;
             },
             Dungeon.door => {
                 if (player.keys > 0) {
                     player.keys -= 1;
-                    map.dungeon[player.y][player.x] = Dungeon.doorOpen;
+                    map.val.dungeon[player.y][player.x] = Dungeon.doorOpen;
                 } else {}
             },
             else => {},
@@ -126,33 +126,33 @@ pub const Player = struct {
     fn collide(self: *Player, map: *Map, dir: Direction) usize {
         switch (dir) {
             Direction.north => {
-                if (map.tiles[self.y - 1][self.x] == Tile.wall or map.dungeon[self.y - 1][self.x] == Dungeon.door) {
-                    if (map.dungeon[self.y - 1][self.x] == Dungeon.door and self.keys > 0) {
-                        map.dungeon[self.y - 1][self.x] = Dungeon.doorOpen;
+                if (map.val.tiles[self.y - 1][self.x] == Tile.wall or map.val.dungeon[self.y - 1][self.x] == Dungeon.door) {
+                    if (map.val.dungeon[self.y - 1][self.x] == Dungeon.door and self.keys > 0) {
+                        map.val.dungeon[self.y - 1][self.x] = Dungeon.doorOpen;
                     }
                     return 0;
                 }
             },
             Direction.south => {
-                if (map.tiles[self.y + 1][self.x] == Tile.wall or map.dungeon[self.y + 1][self.x] == Dungeon.door) {
-                    if (map.dungeon[self.y + 1][self.x] == Dungeon.door and self.keys > 0) {
-                        map.dungeon[self.y + 1][self.x] = Dungeon.doorOpen;
+                if (map.val.tiles[self.y + 1][self.x] == Tile.wall or map.val.dungeon[self.y + 1][self.x] == Dungeon.door) {
+                    if (map.val.dungeon[self.y + 1][self.x] == Dungeon.door and self.keys > 0) {
+                        map.val.dungeon[self.y + 1][self.x] = Dungeon.doorOpen;
                     }
                     return 0;
                 }
             },
             Direction.east => {
-                if (map.tiles[self.y][self.x + 1] == Tile.wall or map.dungeon[self.y][self.x + 1] == Dungeon.door) {
-                    if (map.dungeon[self.y][self.x + 1] == Dungeon.door and self.keys > 0) {
-                        map.dungeon[self.y][self.x + 1] = Dungeon.doorOpen;
+                if (map.val.tiles[self.y][self.x + 1] == Tile.wall or map.val.dungeon[self.y][self.x + 1] == Dungeon.door) {
+                    if (map.val.dungeon[self.y][self.x + 1] == Dungeon.door and self.keys > 0) {
+                        map.val.dungeon[self.y][self.x + 1] = Dungeon.doorOpen;
                     }
                     return 0;
                 }
             },
             Direction.west => {
-                if (map.tiles[self.y][self.x - 1] == Tile.wall or map.dungeon[self.y][self.x - 1] == Dungeon.door) {
-                    if (map.dungeon[self.y][self.x - 1] == Dungeon.door and self.keys > 0) {
-                        map.dungeon[self.y][self.x - 1] = Dungeon.doorOpen;
+                if (map.val.tiles[self.y][self.x - 1] == Tile.wall or map.val.dungeon[self.y][self.x - 1] == Dungeon.door) {
+                    if (map.val.dungeon[self.y][self.x - 1] == Dungeon.door and self.keys > 0) {
+                        map.val.dungeon[self.y][self.x - 1] = Dungeon.doorOpen;
                     }
                     return 0;
                 }
