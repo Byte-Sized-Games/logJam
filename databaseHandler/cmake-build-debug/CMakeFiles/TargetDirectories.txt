@@ -1,0 +1,3 @@
+/home/phoenix/CLionProjects/logJam12/databaseHandler/cmake-build-debug/CMakeFiles/databaseHandler.dir
+/home/phoenix/CLionProjects/logJam12/databaseHandler/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/phoenix/CLionProjects/logJam12/databaseHandler/cmake-build-debug/CMakeFiles/rebuild_cache.dir

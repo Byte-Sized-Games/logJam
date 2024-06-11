@@ -30,7 +30,6 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
-
     exe.linkLibrary(raylib_artifact);
     exe.root_module.addImport("raylib", raylib);
     exe.root_module.addImport("raygui", raygui);

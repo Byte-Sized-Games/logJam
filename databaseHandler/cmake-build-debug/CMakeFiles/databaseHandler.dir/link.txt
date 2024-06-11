@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/databaseHandler.dir/main.cpp.o CMakeFiles/databaseHandler.dir/sqlite3.c.o CMakeFiles/databaseHandler.dir/DatabaseManager.cpp.o CMakeFiles/databaseHandler.dir/Leaderboards.cpp.o CMakeFiles/databaseHandler.dir/MapData.cpp.o -o databaseHandler 

@@ -16,8 +16,29 @@ const melodie = @import("melodie.zig");
 const screenHeight = 640;
 const screenWidth = 640;
 
-// Types
+// type for stacks
 
+// state object declaration
+pub const GameState = struct {
+    DrawStack : std.ArrayList,
+    LogicStack : std.ArrayList,
+    InputStack : std.ArrayList,
+    Init: std.ArrayList,
+};
+
+// pointer to current gamestate
+pub var currentState : GameState = undefined;
+
+// allocator for persistent callstacks
+var MainArena = std.heap.ArenaAllocator.init(std.heap.GeneralPurposeAllocator(.{}).allocator());
+const MainAlloc = MainArena.allocator();
+
+// persistent, prioritized callstacks. avoid where possible.
+pub const LogicStack : std.ArrayList(std.ArrayList()) = std.ArrayList(std.ArrayList()).init(MainAlloc);
+pub const DrawStack : std.ArrayList(std.ArrayList()) = std.ArrayList(std.ArrayList()).init(MainAlloc);
+pub const InputStack : std.ArrayList(std.ArrayList()) = std.ArrayList(std.ArrayList()).init(MainAlloc);
+
+// Types
 pub const Scenes = enum {
     MainMenu,
     Level,
@@ -28,7 +49,9 @@ const pager = std.heap.page_allocator;
 var arena = std.heap.ArenaAllocator.init(pager);
 
 pub fn main() !void {
+    // deferring bc it doesn't work outside a function scope
     defer arena.deinit();
+    defer MainArena.deinit();
     const allocator = arena.allocator();
 
     // Initialise Window
@@ -44,6 +67,12 @@ pub fn main() !void {
     // Initialise Main Menu
     const menu = try game.mainMenu(allocator);
 
+    // split off rendering and input capture threads
+    std.Thread.start(fn(void) void {
+        if(true) {
+            std.debug.print("penis");
+        }
+    });
     while (!raylib.windowShouldClose()) {
 
         // Rendering Loop
