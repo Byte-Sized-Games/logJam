@@ -16,6 +16,7 @@
 ### ⚙️ Technologies
 
 - Programmed in Zig for speed & explicit memory management
+- Database system programmed with C++ and SQLite
 - Built with Raylib library
 
 ## Building this project
