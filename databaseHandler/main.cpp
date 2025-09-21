@@ -20,11 +20,12 @@ done?? -search and sort instead of if statements
  -review and comment code
  main: ~200 lines, mapData.cpp: ~310, Leaderboards.cpp: ~145, DatabaseManager: ~165,
  mapData.h: ~40, Leaderboards.h: ~25, DatabaseManager.h: ~40
- 200+310+145+165+40+25+40=925 lines im sobbing
+ 200+310+145+165+40+25+40=925
  */
 
-
-//also uses recursion
+//theres array of pairs, where the first is the name of thr function, and the second is the function wrapper, used for storing callable objects
+//its for the function that takes an int and a char array, the number of command-line arguments, and the arguments themselves
+//x is argv[1], the first command from the user
 int binarySearch(std::pair<std::string, std::function<void(int, char**)>> arr[], int l, int r, std::string x) {
     if (r >= l) {
         int mid = l + (r - l) / 2;
@@ -35,6 +36,7 @@ int binarySearch(std::pair<std::string, std::function<void(int, char**)>> arr[],
 
         // If element is smaller than mid, then it can only be present in left subarray
         if (arr[mid].first > x)
+            //do recursion
             return binarySearch(arr, l, mid - 1, x);
 
         // Else the element can only be present in right subarray
@@ -54,7 +56,9 @@ void handleCommandLineArguments(int argc, char* argv[]) {
     md.createDB();
     md.createTable();
 
-    // Define the command array
+    // Define the command array, there is a pair of strings, command name is first
+    // function wrappers are second so we can execute them and feed the right parameters
+    //char** is used since its a pointer to C-style strings, array of char*
     std::pair<std::string, std::function<void(int, char**)>> commandArray[] = {
             //this uses binary search to search for the commands instead of many if statements
             {"deleteData", [&lb, &md](int argc, char* argv[]) {
@@ -216,7 +220,26 @@ void handleCommandLineArguments(int argc, char* argv[]) {
 }
 
 int main(int argc, char* argv[]) {
+    //keeping main as clean as possible, best for testing so i can easily turn off the command line stuff when i need to
+
+
     handleCommandLineArguments(argc, argv);
+
+
+    /*
+     *  while you can do this from the command line, as used by the rest of the application
+     *  , it may be easier to test it from here
+    Leaderboards lb;
+    MapData md;
+
+    lb.insertData(2,9994,"micheal");
+    lb.insertData(2,9694,"brandon");
+    lb.outputData();
+
+    lb.genLB(2);
+    md.next10Lv();
+     */
+
 
     return 0;
 }

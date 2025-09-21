@@ -7,11 +7,11 @@
 
 #include "DatabaseManager.h"
 
-class MapData : public DatabaseManager {
+class MapData : public DatabaseManager { //inherit all the DatabaseManager functions
 public:
     MapData();
-    int createTable() override;
-    std::string getCreateTableSQL() override;
+    int createTable() override; //polymorphism
+    std::string getCreateTableSQL() override; //polyorphism
     void insertData(const std::string& songTitle, const std::string& songArtist,
                     int length, int bpm, int difficulty, int level, const std::string& source);
     //i know its a gross amount of parameters, but it doesnt make sense any other way

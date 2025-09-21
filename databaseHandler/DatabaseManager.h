@@ -31,7 +31,7 @@ public:
 
 
 protected:
-    //im doing encapsulation ooh aah
+    //im doing encapsulation
     const char* s;
     sqlite3* DB;
     static const char* dir;

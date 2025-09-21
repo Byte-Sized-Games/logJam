@@ -11,8 +11,8 @@ class Leaderboards : public DatabaseManager {
 public:
 
     Leaderboards();
-    int createTable() override;
-    std::string getCreateTableSQL() override;
+    int createTable() override; //polymirphism
+    std::string getCreateTableSQL() override; //polymorphism
     static int callback(void* NotUsed, int argc, char** argv, char** azColName);
     void deleteData(int id);
     void outputData();
